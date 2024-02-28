@@ -1,4 +1,8 @@
+using Application.Appoitments;
+using Application.Core;
+using Application.MedicalHistories;
 using DotNetEnv;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -11,6 +15,9 @@ Env.Load();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+builder.Services.AddMediatR(typeof(AppointmentsList.Handler));
+builder.Services.AddMediatR(typeof(MedicalHistoryList.Handler));
+builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 
 builder.Services.AddDbContext<ApplicationDbContext>(opt =>
 {
