@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Application.Core;
+using MediatR;
 using Persistence;
 
 namespace Application.MedicalHistories
@@ -11,7 +12,7 @@ namespace Application.MedicalHistories
         /// <summary>
         /// Represents the command to delete a medical history.
         /// </summary>
-        public class Command : IRequest
+        public class Command : IRequest<Result<Unit>>
         {
             /// <summary>
             /// Gets or sets the ID of the medical history to be deleted.
@@ -22,7 +23,7 @@ namespace Application.MedicalHistories
         /// <summary>
         /// Represents the handler for the <see cref="Command"/> to delete a medical history.
         /// </summary>
-        public class Handler : IRequestHandler<Command>
+        public class Handler : IRequestHandler<Command, Result<Unit>>
         {
             private readonly ApplicationDbContext _context;
 
@@ -41,15 +42,19 @@ namespace Application.MedicalHistories
             /// <param name="request">The command representing the ID of the medical history to be deleted.</param>
             /// <param name="cancellationToken">The cancellation token.</param>
             /// <returns>A task representing the asynchronous operation. The task result is a <see cref="Unit"/>.</returns>
-            public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var medicalHistory = await _context.MedicalHistories.FindAsync(request.Id);
 
+                if (medicalHistory is null) return null;
+
                 _context.Remove(medicalHistory);
 
-                await _context.SaveChangesAsync();
+                var result = await _context.SaveChangesAsync() > 0;
 
-                return Unit.Value;
+                if (!result) return Result<Unit>.Failure("Failed to Delete Medical History");
+
+                return Result<Unit>.Success(Unit.Value);
             }
         }
     }

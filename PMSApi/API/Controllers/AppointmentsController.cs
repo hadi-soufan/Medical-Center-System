@@ -1,5 +1,5 @@
 ﻿using Application.Appoitments;
-using Domain;
+using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -13,17 +13,17 @@ namespace API.Controllers
         /// <inheritdoc />
         // GET: /api/appointments
         [HttpGet]
-        public async Task<ActionResult<List<Appointment>>> GetAppoitments()
+        public async Task<IActionResult> GetAppoitments()
         {
-            return await Mediator.Send(new AppointmentsList.Query());
+            return HandleResult(await Mediator.Send(new AppointmentsList.Query()));
         }
 
         /// <inheritdoc />
         // GET: /api/appointments
         [HttpGet("{id}")]
-        public async Task<ActionResult<Appointment>> GetAppoitment(Guid id)
+        public async Task<IActionResult> GetAppoitment(Guid id)
         {
-            return await Mediator.Send(new AppointmentDetails.Query { Id = id });
+            return HandleResult(await Mediator.Send(new AppointmentDetails.Query { Id = id }));
         }
 
         /// <inheritdoc />
@@ -31,7 +31,7 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAppoitment(Appointment appointment)
         {
-            return Ok(await Mediator.Send(new AppointmentCreate.Command { Appointment = appointment}));
+            return HandleResult(await Mediator.Send(new AppointmentCreate.Command { Appointment = appointment}));
         }
 
         /// <inheritdoc />
@@ -41,7 +41,7 @@ namespace API.Controllers
         {
             appointment.AppointmentId = id;
 
-            return Ok(await Mediator.Send(new AppointmentUpdate.Command { Appointment = appointment }));
+            return HandleResult(await Mediator.Send(new AppointmentUpdate.Command { Appointment = appointment }));
         }
 
         /// <inheritdoc />
@@ -49,7 +49,7 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAppointment(Guid id)
         {
-            return Ok(await Mediator.Send(new AppointmentDelete.Command { Id = id }));
+            return HandleResult(await Mediator.Send(new AppointmentDelete.Command { Id = id }));
         }
     }
 }

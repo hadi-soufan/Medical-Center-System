@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Domain;
+using Domain.Entities;
 
 /// <summary>
 /// Represents a mapping profile for AutoMapper.

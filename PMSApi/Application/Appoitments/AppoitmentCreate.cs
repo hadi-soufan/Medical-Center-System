@@ -1,4 +1,7 @@
-﻿using Domain;
+﻿using Application.Appoitments;
+using Application.Core;
+using Domain.Entities;
+using FluentValidation;
 using MediatR;
 
 using Persistence;
@@ -11,7 +14,7 @@ public class AppointmentCreate
     /// <summary>
     /// Represents the command to create a new appointment.
     /// </summary>
-    public class Command : IRequest
+    public class Command : IRequest<Result<Unit>>
     {
         /// <summary>
         /// Gets or sets the appointment to be created.
@@ -19,10 +22,18 @@ public class AppointmentCreate
         public Appointment Appointment { get; set; }
     }
 
+    public class CommandValidator : AbstractValidator<Command>
+    {
+        public CommandValidator()
+        {
+            RuleFor(x => x.Appointment).SetValidator(new AppointmentValidator());
+        }
+    }
+
     /// <summary>
     /// Represents the handler for the <see cref="Command"/> to create a new appointment.
     /// </summary>
-    public class Handler : IRequestHandler<Command>
+    public class Handler : IRequestHandler<Command, Result<Unit>>
     {
         private readonly ApplicationDbContext _context;
 
@@ -41,16 +52,18 @@ public class AppointmentCreate
         /// <param name="request">The command representing the request to create a new appointment.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>A task representing the asynchronous operation. The task result is the completion status.</returns>
-        public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
         {
             request.Appointment.CreatedAt = DateTime.UtcNow;
             request.Appointment.UpdatedAt = DateTime.UtcNow;
 
             _context.Appointments.Add(request.Appointment);
 
-            await _context.SaveChangesAsync();
+            var result = await _context.SaveChangesAsync() > 0;
 
-            return Unit.Value;
+            if (!result) return Result<Unit>.Failure("Failed to create new Appointment");
+
+            return Result<Unit>.Success(Unit.Value);
         }
     }
 }

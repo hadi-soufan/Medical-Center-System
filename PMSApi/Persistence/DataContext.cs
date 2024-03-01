@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿ using Domain.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence
@@ -6,7 +7,7 @@ namespace Persistence
     /// <summary>
     /// Represents the database context for interacting with the underlying database.
     /// </summary>
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<AppUser>
     {
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {

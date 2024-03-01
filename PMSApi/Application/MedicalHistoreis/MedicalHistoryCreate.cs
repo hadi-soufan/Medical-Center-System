@@ -1,6 +1,9 @@
 ﻿using MediatR;
 using Persistence;
-using Domain;
+using Domain.Entities;
+using Application.Appoitments;
+using FluentValidation;
+using Application.MedicalHistoreis;
 
 namespace Application.MedicalHistories
 {
@@ -18,6 +21,14 @@ namespace Application.MedicalHistories
             /// Gets or sets the medical history to be created.
             /// </summary>
             public MedicalHistory MedicalHistory { get; set; }
+        }
+
+        public class CommandValidator : AbstractValidator<Command>
+        {
+            public CommandValidator()
+            {
+                RuleFor(x => x.MedicalHistory).SetValidator(new MedicalHistoryValidators());
+            }
         }
 
         /// <summary>

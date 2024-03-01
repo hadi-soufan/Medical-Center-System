@@ -1,5 +1,6 @@
-﻿using AutoMapper;
-using Domain;
+﻿using Application.Core;
+using AutoMapper;
+using Domain.Entities;
 using MediatR;
 
 using Persistence;
@@ -12,7 +13,7 @@ public class MedicalHistoryUpdate
     /// <summary>
     /// Represents the command to update a medical history.
     /// </summary>
-    public class Command : IRequest
+    public class Command : IRequest<Result<Unit>>
     {
         /// <summary>
         /// Gets or sets the medical history to be updated.
@@ -23,7 +24,7 @@ public class MedicalHistoryUpdate
     /// <summary>
     /// Represents the handler for the <see cref="Command"/> to update a medical history.
     /// </summary>
-    public class Handler : IRequestHandler<Command>
+    public class Handler : IRequestHandler<Command, Result<Unit>>
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -45,18 +46,22 @@ public class MedicalHistoryUpdate
         /// <param name="request">The command representing the request to update the medical history.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>A task representing the asynchronous operation. The task result is the completion status.</returns>
-        public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
         {
             request.MedicalHistory.CreatedAt = DateTime.UtcNow;
             request.MedicalHistory.UpdatedAt = DateTime.UtcNow;
 
             var medicalHistory = await _context.MedicalHistories.FindAsync(request.MedicalHistory.MedicalHistoryId);
 
+            if (medicalHistory is null) return null;
+
             _mapper.Map(request.MedicalHistory, medicalHistory);
 
-            await _context.SaveChangesAsync();
+            var result = await _context.SaveChangesAsync() > 0;
 
-            return Unit.Value;
+            if (!result) return Result<Unit>.Failure("Failed to Updated Medical History");
+
+            return Result<Unit>.Success(Unit.Value);
         }
     }
 }

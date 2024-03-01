@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using Application.Core;
+using Domain.Entities;
 using MediatR;
 
 using Persistence;
@@ -11,7 +12,7 @@ public class AppointmentDetails
     /// <summary>
     /// Represents the query to retrieve details of an appointment.
     /// </summary>
-    public class Query : IRequest<Appointment>
+    public class Query : IRequest<Result<Appointment>>
     {
         /// <summary>
         /// Gets or sets the ID of the appointment for which details are to be retrieved.
@@ -22,7 +23,7 @@ public class AppointmentDetails
     /// <summary>
     /// Represents the handler for the <see cref="Query"/> to retrieve details of an appointment.
     /// </summary>
-    public class Handler : IRequestHandler<Query, Appointment>
+    public class Handler : IRequestHandler<Query, Result<Appointment>>
     {
         private readonly ApplicationDbContext _context;
 
@@ -41,9 +42,11 @@ public class AppointmentDetails
         /// <param name="request">The query representing the request to retrieve details of an appointment.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>A task representing the asynchronous operation. The task result is the appointment details.</returns>
-        public async Task<Appointment> Handle(Query request, CancellationToken cancellationToken)
+        public async Task<Result<Appointment>> Handle(Query request, CancellationToken cancellationToken)
         {
-            return await _context.Appointments.FindAsync(request.Id);
+            var appointment = await _context.Appointments.FindAsync(request.Id);
+
+            return Result<Appointment>.Success(appointment);
         }
     }
 }

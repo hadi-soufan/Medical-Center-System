@@ -1,6 +1,6 @@
 ﻿using Application.MedicalHistoreis;
 using Application.MedicalHistories;
-using Domain;
+using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -15,7 +15,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<MedicalHistory>>> GetMedicalHistories()
         {
-            return await Mediator.Send(new MedicalHistoryList.Query());
+            return HandleResult(await Mediator.Send(new MedicalHistoryList.Query()));
         }
 
         /// <inheritdoc />
@@ -23,7 +23,7 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<MedicalHistory>> GetAppoitment(Guid id)
         {
-            return await Mediator.Send(new MedicalHistoryDetails.Query { Id = id });
+            return HandleResult(await Mediator.Send(new MedicalHistoryDetails.Query { Id = id }));
         }
 
         /// <inheritdoc />
@@ -41,7 +41,7 @@ namespace API.Controllers
         {
             medicalHistory.MedicalHistoryId = id;
 
-            return Ok(await Mediator.Send(new MedicalHistoryUpdate.Command { MedicalHistory = medicalHistory }));
+            return HandleResult(await Mediator.Send(new MedicalHistoryUpdate.Command { MedicalHistory = medicalHistory }));
         }
 
         /// <inheritdoc />
@@ -49,7 +49,7 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMedicalHistory(Guid id)
         {
-            return Ok(await Mediator.Send(new MedicalHistoryDelete.Command { Id = id }));
+            return HandleResult(await Mediator.Send(new MedicalHistoryDelete.Command { Id = id }));
         }
     }
 }

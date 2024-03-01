@@ -1,5 +1,6 @@
-﻿using AutoMapper;
-using Domain;
+﻿using Application.Core;
+using AutoMapper;
+using Domain.Entities;
 using MediatR;
 
 using Persistence;
@@ -12,7 +13,7 @@ public class AppointmentUpdate
     /// <summary>
     /// Represents the command to update an appointment.
     /// </summary>
-    public class Command : IRequest
+    public class Command : IRequest<Result<Unit>>
     {
         /// <summary>
         /// Gets or sets the appointment to be updated.
@@ -23,7 +24,7 @@ public class AppointmentUpdate
     /// <summary>
     /// Represents the handler for the <see cref="Command"/> to update an appointment.
     /// </summary>
-    public class Handler : IRequestHandler<Command>
+    public class Handler : IRequestHandler<Command, Result<Unit>>
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -45,17 +46,21 @@ public class AppointmentUpdate
         /// <param name="request">The command representing the request to update an appointment.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>A task representing the asynchronous operation. The task result is the completion status.</returns>
-        public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
         {
             request.Appointment.UpdatedAt = DateTime.UtcNow;
 
             var appointment = await _context.Appointments.FindAsync(request.Appointment.AppointmentId);
 
+            if (appointment is null) return null;
+
             _mapper.Map(request.Appointment, appointment);
 
-            await _context.SaveChangesAsync();
+            var result = await _context.SaveChangesAsync() > 0;
 
-            return Unit.Value;
+            if (!result) return Result<Unit>.Failure("Failed to Update the Appointment");
+
+            return Result<Unit>.Success(Unit.Value);
         }
     }
 }

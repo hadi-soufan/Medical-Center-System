@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using static Domain.Enums.Enums;
 
-namespace Domain
+namespace Domain.Entities
 {
     /// <summary>
     /// Represents medical history information for a patient.
@@ -15,10 +14,12 @@ namespace Domain
         public DateTime AppointmentDate { get; set; }
 
         [Display(Name = "Appointment Status")]
-        public AppointmentStatus AppointmentStatus { get; set; }
+        [StringLength(20)]
+        public string AppointmentStatus { get; set; }
 
         [Display(Name = "Appointment Type")]
-        public AppointmentType AppointmentType { get; set; }
+        [StringLength(20)]
+        public string AppointmentType { get; set; }
 
         [Display(Name = "Appointment Date")]
         [StringLength(255)]

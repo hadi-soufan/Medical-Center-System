@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Application.Core;
+using MediatR;
 
 using Persistence;
 
@@ -10,7 +11,7 @@ public class AppointmentDelete
     /// <summary>
     /// Represents the command to delete an appointment.
     /// </summary>
-    public class Command : IRequest
+    public class Command : IRequest<Result<Unit>>
     {
         /// <summary>
         /// Gets or sets the ID of the appointment to be deleted.
@@ -21,7 +22,7 @@ public class AppointmentDelete
     /// <summary>
     /// Represents the handler for the <see cref="Command"/> to delete an appointment.
     /// </summary>
-    public class Handler : IRequestHandler<Command>
+    public class Handler : IRequestHandler<Command, Result<Unit>>
     {
         private readonly ApplicationDbContext _context;
 
@@ -40,15 +41,19 @@ public class AppointmentDelete
         /// <param name="request">The command representing the request to delete an appointment.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>A task representing the asynchronous operation. The task result is the completion status.</returns>
-        public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
         {
             var appointment = await _context.Appointments.FindAsync(request.Id);
 
+            if (appointment is null) return null;
+
             _context.Remove(appointment);
 
-            await _context.SaveChangesAsync();
+            var result = await _context.SaveChangesAsync() > 0;
 
-            return Unit.Value;
+            if (!result) return Result<Unit>.Failure("Failed to Delete the Appointment");
+
+            return Result<Unit>.Success(Unit.Value);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using Application.Core;
+using Domain.Entities;
 using MediatR;
 using Persistence;
 
@@ -12,7 +13,7 @@ namespace Application.MedicalHistoreis
         /// <summary>
         /// Represents the query to retrieve details of a medical history.
         /// </summary>
-        public class Query : IRequest<MedicalHistory>
+        public class Query : IRequest<Result<MedicalHistory>>
         {
             /// <summary>
             /// Gets or sets the ID of the medical history for which details are requested.
@@ -23,7 +24,7 @@ namespace Application.MedicalHistoreis
         /// <summary>
         /// Represents the handler for the <see cref="Query"/> to retrieve details of a medical history.
         /// </summary>
-        public class Handler : IRequestHandler<Query, MedicalHistory>
+        public class Handler : IRequestHandler<Query, Result<MedicalHistory>>
         {
             private readonly ApplicationDbContext _context;
 
@@ -42,9 +43,11 @@ namespace Application.MedicalHistoreis
             /// <param name="request">The query representing the ID of the medical history for which details are requested.</param>
             /// <param name="cancellationToken">The cancellation token.</param>
             /// <returns>A task representing the asynchronous operation. The task result is the <see cref="MedicalHistory"/> object corresponding to the specified ID.</returns>
-            public async Task<MedicalHistory> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<MedicalHistory>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return await _context.MedicalHistories.FindAsync(request.Id);
+                var medicalHistory = await _context.MedicalHistories.FindAsync(request.Id);
+
+                return Result<MedicalHistory>.Success(medicalHistory);
             }
         }
     }

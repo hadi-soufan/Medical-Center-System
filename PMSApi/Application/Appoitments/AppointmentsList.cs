@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using Application.Core;
+using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -13,7 +14,7 @@ namespace Application.Appoitments
         /// <summary>
         /// Represents the query to retrieve a list of appointments.
         /// </summary>
-        public class Query : IRequest<List<Appointment>>
+        public class Query : IRequest<Result<List<Appointment>>>
         {
 
         }
@@ -21,7 +22,7 @@ namespace Application.Appoitments
         /// <summary>
         /// Represents the handler for the <see cref="Query"/> to retrieve a list of appointments.
         /// </summary>
-        public class Handler : IRequestHandler<Query, List<Appointment>>
+        public class Handler : IRequestHandler<Query, Result<List<Appointment>>>
         {
             private readonly ApplicationDbContext _context;
 
@@ -40,9 +41,9 @@ namespace Application.Appoitments
             /// <param name="request">The query representing the request to retrieve a list of appointments.</param>
             /// <param name="cancellationToken">The cancellation token.</param>
             /// <returns>A task representing the asynchronous operation. The task result is the list of appointments.</returns>
-            public async Task<List<Appointment>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<List<Appointment>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return await _context.Appointments.ToListAsync(cancellationToken: cancellationToken);
+                return Result<List<Appointment>>.Success(await _context.Appointments.ToListAsync(cancellationToken: cancellationToken));
             }
         }
     }
