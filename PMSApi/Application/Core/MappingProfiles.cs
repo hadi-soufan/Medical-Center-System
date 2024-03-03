@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using Application.Appoitments;
+using Application.Patients;
+using AutoMapper;
 using Domain.Entities;
 
 /// <summary>
@@ -13,5 +15,11 @@ public class MappingProfiles : Profile
     {
         CreateMap<Appointment, Appointment>();
         CreateMap<MedicalHistory, MedicalHistory>();
+        CreateMap<PatientDto, Patient>();
+
+        CreateMap<Appointment, AppointmentDto>()
+                .ForMember(dest => dest.PatientUsername, opt => opt.MapFrom(src => src.Patient.User.UserName));
+
+
     }
 }

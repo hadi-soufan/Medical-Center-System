@@ -1,66 +1,53 @@
-﻿using Application.Core;
-using AutoMapper;
+﻿using Application.Appoitments;
+using Application.Core;
 using Domain.Entities;
 using MediatR;
-
 using Persistence;
 
-/// <summary>
-/// Represents a command to update an appointment.
-/// </summary>
-public class AppointmentUpdate
+namespace Application.Appointments
 {
-    /// <summary>
-    /// Represents the command to update an appointment.
-    /// </summary>
-    public class Command : IRequest<Result<Unit>>
+    public class AppointmentUpdate
     {
-        /// <summary>
-        /// Gets or sets the appointment to be updated.
-        /// </summary>
-        public Appointment Appointment { get; set; }
-    }
-
-    /// <summary>
-    /// Represents the handler for the <see cref="Command"/> to update an appointment.
-    /// </summary>
-    public class Handler : IRequestHandler<Command, Result<Unit>>
-    {
-        private readonly ApplicationDbContext _context;
-        private readonly IMapper _mapper;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Handler"/> class with the specified application database context and mapper.
-        /// </summary>
-        /// <param name="context">The application database context.</param>
-        /// <param name="mapper">The mapper.</param>
-        public Handler(ApplicationDbContext context, IMapper mapper)
+        public class Command : IRequest<Result<Unit>>
         {
-            _context = context;
-            _mapper = mapper;
+            public Guid Id { get; set; }
+            public Appointment Appointment { get; set; }
         }
 
-        /// <summary>
-        /// Handles the command to update an appointment.
-        /// </summary>
-        /// <param name="request">The command representing the request to update an appointment.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>A task representing the asynchronous operation. The task result is the completion status.</returns>
-        public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+        public class Handler : IRequestHandler<Command, Result<Unit>>
         {
-            request.Appointment.UpdatedAt = DateTime.UtcNow;
+            private readonly ApplicationDbContext _context;
 
-            var appointment = await _context.Appointments.FindAsync(request.Appointment.AppointmentId);
+            public Handler(ApplicationDbContext context)
+            {
+                _context = context;
+            }
 
-            if (appointment is null) return null;
+            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+            {
+                var appointment = await _context.Appointments.FindAsync(request.Id);
 
-            _mapper.Map(request.Appointment, appointment);
+                if (appointment == null)
+                {
+                    return Result<Unit>.Failure("Appointment not found");
+                }
 
-            var result = await _context.SaveChangesAsync() > 0;
+                // Update the appointment properties
+                appointment.AppointmentDate = request.Appointment.AppointmentDate;
+                appointment.AppointmentStatus = request.Appointment.AppointmentStatus;
+                appointment.AppointmentType = request.Appointment.AppointmentType;
+                appointment.Notes = request.Appointment.Notes;
 
-            if (!result) return Result<Unit>.Failure("Failed to Update the Appointment");
+                // Save changes to the database
+                var result = await _context.SaveChangesAsync(cancellationToken) > 0;
 
-            return Result<Unit>.Success(Unit.Value);
+                if (!result)
+                {
+                    return Result<Unit>.Failure("Failed to update appointment");
+                }
+
+                return Result<Unit>.Success(Unit.Value);
+            }
         }
     }
 }

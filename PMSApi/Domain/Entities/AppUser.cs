@@ -16,7 +16,7 @@ namespace Domain.Entities
 
         [StringLength(225)]
         public string MotherName { get; set; }
-        public DateOnly DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; }
 
         [StringLength(150)]
         public string Nationality { get; set; }
@@ -53,6 +53,11 @@ namespace Domain.Entities
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; }
         public bool IsCancelled { get; set; }
+
+        public ICollection<Doctor> Doctors { get; set; }
+        //public ICollection<Appointment> Appointments { get; set; }
+
+        public ICollection<Patient> Patients { get; set; } = new List<Patient>();
 
     }
 }

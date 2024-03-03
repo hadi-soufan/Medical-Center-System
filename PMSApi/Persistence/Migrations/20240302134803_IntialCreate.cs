@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class AppUserModel : Migration
+    public partial class IntialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,7 +34,7 @@ namespace Persistence.Migrations
                     DisplayName = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
                     FatherName = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
                     MotherName = table.Column<string>(type: "character varying(225)", maxLength: 225, nullable: true),
-                    DateOfBirth = table.Column<DateOnly>(type: "date", nullable: false),
+                    DateOfBirth = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     Nationality = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
                     Education = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
                     Gender = table.Column<string>(type: "character varying(6)", maxLength: 6, nullable: true),
@@ -177,6 +177,114 @@ namespace Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Doctors",
+                columns: table => new
+                {
+                    DoctorId = table.Column<Guid>(type: "uuid", nullable: false),
+                    DoctorLicenseId = table.Column<int>(type: "integer", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Doctors", x => x.DoctorId);
+                    table.ForeignKey(
+                        name: "FK_Doctors_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Patients",
+                columns: table => new
+                {
+                    PatientId = table.Column<Guid>(type: "uuid", nullable: false),
+                    DisplayName = table.Column<string>(type: "text", nullable: true),
+                    Email = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
+                    PhoneNumber = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    DateOfBirth = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Gender = table.Column<string>(type: "character varying(6)", maxLength: 6, nullable: true),
+                    BloodType = table.Column<string>(type: "character varying(5)", maxLength: 5, nullable: true),
+                    Address = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Occupation = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    InsuranceId = table.Column<int>(type: "integer", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Patients", x => x.PatientId);
+                    table.ForeignKey(
+                        name: "FK_Patients_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Appointments",
+                columns: table => new
+                {
+                    AppointmentId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AppointmentDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    AppointmentStatus = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    AppointmentType = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    Notes = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    IsCancelled = table.Column<bool>(type: "boolean", nullable: false),
+                    PatientId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Appointments", x => x.AppointmentId);
+                    table.ForeignKey(
+                        name: "FK_Appointments_Patients_PatientId",
+                        column: x => x.PatientId,
+                        principalTable: "Patients",
+                        principalColumn: "PatientId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MedicalHistories",
+                columns: table => new
+                {
+                    MedicalHistoryId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Height = table.Column<decimal>(type: "numeric", nullable: false),
+                    Weight = table.Column<decimal>(type: "numeric", nullable: false),
+                    MedicalProblems = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    MentalHealthProblems = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Medicines = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Allergics = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    SugreriesHistory = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Vaccines = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Diagnosis = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    TestsPerformed = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    TreatmenPlans = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    FamilyMedicalHistory = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    PatientId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PatientName = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MedicalHistories", x => x.MedicalHistoryId);
+                    table.ForeignKey(
+                        name: "FK_MedicalHistories_Patients_PatientId",
+                        column: x => x.PatientId,
+                        principalTable: "Patients",
+                        principalColumn: "PatientId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Appointments_PatientId",
+                table: "Appointments",
+                column: "PatientId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -213,11 +321,29 @@ namespace Persistence.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Doctors_UserId",
+                table: "Doctors",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MedicalHistories_PatientId",
+                table: "MedicalHistories",
+                column: "PatientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Patients_UserId",
+                table: "Patients",
+                column: "UserId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Appointments");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -234,7 +360,16 @@ namespace Persistence.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Doctors");
+
+            migrationBuilder.DropTable(
+                name: "MedicalHistories");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Patients");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

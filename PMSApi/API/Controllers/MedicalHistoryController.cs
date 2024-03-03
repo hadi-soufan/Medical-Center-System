@@ -11,15 +11,15 @@ namespace API.Controllers
     public class MedicalHistoryController : BaseApiController
     {
         /// <inheritdoc />
-        // GET: /api/medicalhistory
-        [HttpGet]
+        // GET: /api/medicalhistory/all-medical-histories
+        [HttpGet("all-medical-histories")]
         public async Task<ActionResult<List<MedicalHistory>>> GetMedicalHistories()
         {
             return HandleResult(await Mediator.Send(new MedicalHistoryList.Query()));
         }
 
         /// <inheritdoc />
-        // GET: /api/medicalhistory
+        // GET: /api/medicalhistory/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<MedicalHistory>> GetAppoitment(Guid id)
         {
@@ -27,15 +27,15 @@ namespace API.Controllers
         }
 
         /// <inheritdoc />
-        // POST: /api/medicalhistory
-        [HttpPost]
+        // POST: /api/medicalhistory/create-new-medical-history
+        [HttpPost("create-new-medical-history")]
         public async Task<IActionResult> CreateMedicalHistory(MedicalHistory medicalHistory)
         {
-            return Ok(await Mediator.Send(new MedicalHistoryCreate.Command { MedicalHistory = medicalHistory }));
+            return HandleResult(await Mediator.Send(new MedicalHistoryCreate.Command { MedicalHistory = medicalHistory }));
         }
 
         /// <inheritdoc />
-        // PUT: /api/medicalhistory
+        // PUT: /api/medicalhistory/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateMedicalHistory(Guid id, MedicalHistory medicalHistory)
         {
@@ -45,7 +45,7 @@ namespace API.Controllers
         }
 
         /// <inheritdoc />
-        // DELETE: /api/medicalhistory
+        // DELETE: /api/medicalhistory/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMedicalHistory(Guid id)
         {

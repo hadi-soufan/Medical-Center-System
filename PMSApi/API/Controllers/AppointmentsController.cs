@@ -1,6 +1,10 @@
-﻿using Application.Appoitments;
+﻿using Application.Appointments;
+using Application.Appoitments;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Persistence;
 
 namespace API.Controllers
 {
@@ -9,43 +13,48 @@ namespace API.Controllers
     /// </summary>
     public class AppointmentsController : BaseApiController
     {
+        private readonly ApplicationDbContext _context;
+
+        public AppointmentsController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
         /// <inheritdoc />
-        // GET: /api/appointments
-        [HttpGet]
+        // GET: /api/appointments/all-appointments
+        [HttpGet("all-appointments")]
         public async Task<IActionResult> GetAppoitments()
         {
             return HandleResult(await Mediator.Send(new AppointmentsList.Query()));
         }
 
         /// <inheritdoc />
-        // GET: /api/appointments
+        // GET: /api/appointments/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAppoitment(Guid id)
         {
             return HandleResult(await Mediator.Send(new AppointmentDetails.Query { Id = id }));
         }
 
-        /// <inheritdoc />
-        // POST: /api/appointments
-        [HttpPost]
-        public async Task<IActionResult> CreateAppoitment(Appointment appointment)
+        // POST: /api/appointments/create-new-appointment
+        [HttpPost("create-new-appointment")]
+        public async Task<IActionResult> CreateAppointment([FromBody] AppointmentCreate.Command command)
         {
-            return HandleResult(await Mediator.Send(new AppointmentCreate.Command { Appointment = appointment}));
+            return HandleResult(await Mediator.Send(command));
         }
+
 
         /// <inheritdoc />
         // PUT: /api/appointments
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAppointment(Guid id, Appointment appointment)
         {
-            appointment.AppointmentId = id;
-
-            return HandleResult(await Mediator.Send(new AppointmentUpdate.Command { Appointment = appointment }));
+            return HandleResult(await Mediator.Send(new AppointmentUpdate.Command { Id = id, Appointment = appointment }));
         }
 
+
         /// <inheritdoc />
-        // DELETE: /api/appointments
+        // DELETE: /api/appointments/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAppointment(Guid id)
         {

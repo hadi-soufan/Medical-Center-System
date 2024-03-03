@@ -40,7 +40,33 @@ namespace Application.MedicalHistories
             /// <returns>A task representing the asynchronous operation. The task result is the list of <see cref="MedicalHistory"/> objects.</returns>
             public async Task<Result<List<MedicalHistory>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return Result<List<MedicalHistory>>.Success(await _context.MedicalHistories.ToListAsync(cancellationToken: cancellationToken));
+                var medicalHistories = await _context.MedicalHistories
+                    .Include(mh => mh.Patient)
+                    .ThenInclude(p => p.User)
+                    .Select(mh => new MedicalHistory
+                    {
+                        MedicalHistoryId = mh.MedicalHistoryId,
+                        Height = mh.Height,
+                        Weight = mh.Weight,
+                        MedicalProblems = mh.MedicalProblems,
+                        MentalHealthProblems = mh.MentalHealthProblems,
+                        Medicines = mh.Medicines,
+                        Allergics = mh.Allergics,
+                        SugreriesHistory = mh.SugreriesHistory,
+                        Vaccines = mh.Vaccines,
+                        Diagnosis = mh.Diagnosis,
+                        TestsPerformed = mh.TestsPerformed,
+                        TreatmenPlans = mh.TreatmenPlans,
+                        FamilyMedicalHistory = mh.FamilyMedicalHistory,
+                        PatientId = mh.PatientId,
+                        PatientName = mh.Patient.User.DisplayName
+                    })
+                    .ToListAsync(cancellationToken);
+
+                return Result<List<MedicalHistory>>.Success(medicalHistories);
+
+
+                //return Result<List<MedicalHistory>>.Success(await _context.MedicalHistories.ToListAsync(cancellationToken: cancellationToken));
             }
         }
     }

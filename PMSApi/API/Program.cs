@@ -6,9 +6,13 @@ using Application.MedicalHistories;
 using Domain.Entities;
 using DotNetEnv;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +21,15 @@ Env.Load();
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(opt =>
+{
+    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+    opt.Filters.Add(new AuthorizeFilter(policy));
+}).AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+}); ;
+
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
 
@@ -38,12 +50,24 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("CorsPolicy");
 
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
+
+var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+var roles = new[] { "Admin", "Doctor", "Patient", "Receptionest", "Accountant", "Nurse", "Staff" };
+
+foreach (var role in roles)
+{
+    if (!await roleManager.RoleExistsAsync(role))
+        await roleManager.CreateAsync(new IdentityRole(role));
+}
+
 
 try
 {

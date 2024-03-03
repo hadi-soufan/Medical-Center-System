@@ -4,6 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Application.Appoitments;
 using FluentValidation.AspNetCore;
 using FluentValidation;
+using Application.Interfaces;
+using Infrastructure.Security;
+using Application.Patients;
+using Application.Appointments;
 
 namespace API.Extensions
 {
@@ -31,6 +35,7 @@ namespace API.Extensions
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
             services.AddFluentValidationAutoValidation();
             services.AddValidatorsFromAssemblyContaining<AppointmentCreate>();
+            services.AddHttpContextAccessor();
 
             return services;
         }

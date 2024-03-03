@@ -18,7 +18,7 @@ namespace Persistence
                         DisplayName = "Hatan",
                         FatherName = "Michael",
                         MotherName = "Jessica",
-                        DateOfBirth = new DateOnly(1990, 1, 15),
+                        DateOfBirth = new DateTime(1990, 1, 15),
                         Nationality = "American",
                         Education = "Bachelor's degree",
                         Gender = "M",
@@ -43,7 +43,7 @@ namespace Persistence
                         DisplayName = "Jane Smith",
                         FatherName = "David",
                         MotherName = "Jennifer",
-                        DateOfBirth = new DateOnly(1985, 5, 20),
+                        DateOfBirth = new DateTime(1985, 5, 20),
                         Nationality = "Canadian",
                         Education = "Master's degree",
                         Gender = "F",
@@ -69,110 +69,109 @@ namespace Persistence
                 }
             }
 
-
-
             if (context.Appointments.Any()) return;
             if (context.MedicalHistories.Any()) return;
 
-            var appointments = new List<Appointment>
-            {
-                new Appointment
-                {
-                    AppointmentId = Guid.NewGuid(),
-                    AppointmentDate = DateTime.UtcNow.AddMonths(1).ToUniversalTime(),
-                    AppointmentStatus = "Confirmed",
-                    AppointmentType = "OnSite",
-                    Notes = "Sample notes in English",
-                    CreatedAt = DateTime.Now.ToUniversalTime(),
-                    UpdatedAt = DateTime.Now.ToUniversalTime(),
-                    IsCancelled = false
-                },
+            //var appointments = new List<Appointment>
+            //{
+            //    new Appointment
+            //    {
+            //        AppointmentId = Guid.NewGuid(),
+            //        AppointmentDate = DateTime.UtcNow.AddMonths(1).ToUniversalTime(),
+            //        AppointmentStatus = "Confirmed",
+            //        AppointmentType = "OnSite",
+            //        Notes = "Sample notes in English",
+            //        CreatedAt = DateTime.Now.ToUniversalTime(),
+            //        UpdatedAt = DateTime.Now.ToUniversalTime(),
+            //        IsCancelled = false
+            //    },
 
-                new Appointment
-                {
-                    AppointmentId = Guid.NewGuid(),
-                    AppointmentDate = DateTime.UtcNow.AddDays(10).ToUniversalTime(),
-                    AppointmentStatus = "Confirmed",
-                    AppointmentType = "OnSite",
-                    Notes = "Sample notes in English",
-                    CreatedAt = DateTime.Now.ToUniversalTime(),
-                    UpdatedAt = DateTime.Now.ToUniversalTime(),
-                    IsCancelled = false
-                },
+            //    new Appointment
+            //    {
+            //        AppointmentId = Guid.NewGuid(),
+            //        AppointmentDate = DateTime.UtcNow.AddDays(10).ToUniversalTime(),
+            //        AppointmentStatus = "Confirmed",
+            //        AppointmentType = "OnSite",
+            //        Notes = "Sample notes in English",
+            //        CreatedAt = DateTime.Now.ToUniversalTime(),
+            //        UpdatedAt = DateTime.Now.ToUniversalTime(),
+            //        IsCancelled = false
+            //    },
 
-                new Appointment
-                {
-                    AppointmentId = Guid.NewGuid(),
-                    AppointmentDate = DateTime.UtcNow.AddDays(4).ToUniversalTime(),
-                    AppointmentStatus = "Confirmed",
-                    AppointmentType = "OnSite",
-                    Notes = "Sample notes in English",
-                    CreatedAt = DateTime.Now.ToUniversalTime(),
-                    UpdatedAt = DateTime.Now.ToUniversalTime(),
-                    IsCancelled = false
-                }
-            };
+            //    new Appointment
+            //    {
+            //        AppointmentId = Guid.NewGuid(),
+            //        AppointmentDate = DateTime.UtcNow.AddDays(4).ToUniversalTime(),
+            //        AppointmentStatus = "Confirmed",
+            //        AppointmentType = "OnSite",
+            //        Notes = "Sample notes in English",
+            //        CreatedAt = DateTime.Now.ToUniversalTime(),
+            //        UpdatedAt = DateTime.Now.ToUniversalTime(),
+            //        IsCancelled = false
+            //    }
+            //};
 
-            var medicalHistories = new List<MedicalHistory>
-            {
-                new MedicalHistory
-                {
-                    MedicalHistoryId = Guid.NewGuid(),
-                    Height = 170,
-                    Weight = 70,
-                    MedicalProblems = "None",
-                    MentalHealthProblems = "None",
-                    Allergics = "None",
-                    SugreriesHistory = "None",
-                    Vaccines = "COVID-19",
-                    Diagnosis = "Healthy",
-                    TestsPerformed = "Blood test",
-                    TreatmenPlans = "Regular exercise",
-                    FamilyMedicalHistory = "None",
-                    CreatedAt = DateTime.Now.ToUniversalTime(),
-                    UpdatedAt = DateTime.Now.ToUniversalTime(),
-                    IsDeleted = false
-                },
-                new MedicalHistory
-                {
-                    MedicalHistoryId = Guid.NewGuid(),
-                    Height = 170,
-                    Weight = 70,
-                    MedicalProblems = "None",
-                    MentalHealthProblems = "None",
-                    Allergics = "None",
-                    SugreriesHistory = "None",
-                    Vaccines = "COVID-19",
-                    Diagnosis = "Healthy",
-                    TestsPerformed = "Blood test",
-                    TreatmenPlans = "Regular exercise",
-                    FamilyMedicalHistory = "None",
-                    CreatedAt = DateTime.Now.ToUniversalTime(),
-                    UpdatedAt = DateTime.Now.ToUniversalTime(),
-                    IsDeleted = false
-                },
-                new MedicalHistory
-                {
-                    MedicalHistoryId = Guid.NewGuid(),
-                    Height = 170,
-                    Weight = 70,
-                    MedicalProblems = "None",
-                    MentalHealthProblems = "None",
-                    Allergics = "None",
-                    SugreriesHistory = "None",
-                    Vaccines = "COVID-19",
-                    Diagnosis = "Healthy",
-                    TestsPerformed = "Blood test",
-                    TreatmenPlans = "Regular exercise",
-                    FamilyMedicalHistory = "None",
-                    CreatedAt = DateTime.Now.ToUniversalTime(),
-                    UpdatedAt = DateTime.Now.ToUniversalTime(),
-                    IsDeleted = false
-                }
-            };
+            //var medicalHistories = new List<MedicalHistory>
+            //{
+            //    new MedicalHistory
+            //    {
+            //        MedicalHistoryId = Guid.NewGuid(),
+            //        Height = 170,
+            //        Weight = 70,
+            //        MedicalProblems = "None",
+            //        MentalHealthProblems = "None",
+            //        Allergics = "None",
+            //        SugreriesHistory = "None",
+            //        Vaccines = "COVID-19",
+            //        Diagnosis = "Healthy",
+            //        TestsPerformed = "Blood test",
+            //        TreatmenPlans = "Regular exercise",
+            //        FamilyMedicalHistory = "None",
+            //        CreatedAt = DateTime.Now.ToUniversalTime(),
+            //        UpdatedAt = DateTime.Now.ToUniversalTime(),
+            //        IsDeleted = false,
+            //        PatientId = "9e7bd37b-9350-4050-886d-0bc18b2d8c46",
+            //    },
+            //    new MedicalHistory
+            //    {
+            //        MedicalHistoryId = Guid.NewGuid(),
+            //        Height = 170,
+            //        Weight = 70,
+            //        MedicalProblems = "None",
+            //        MentalHealthProblems = "None",
+            //        Allergics = "None",
+            //        SugreriesHistory = "None",
+            //        Vaccines = "COVID-19",
+            //        Diagnosis = "Healthy",
+            //        TestsPerformed = "Blood test",
+            //        TreatmenPlans = "Regular exercise",
+            //        FamilyMedicalHistory = "None",
+            //        CreatedAt = DateTime.Now.ToUniversalTime(),
+            //        UpdatedAt = DateTime.Now.ToUniversalTime(),
+            //        IsDeleted = false
+            //    },
+            //    new MedicalHistory
+            //    {
+            //        MedicalHistoryId = Guid.NewGuid(),
+            //        Height = 170,
+            //        Weight = 70,
+            //        MedicalProblems = "None",
+            //        MentalHealthProblems = "None",
+            //        Allergics = "None",
+            //        SugreriesHistory = "None",
+            //        Vaccines = "COVID-19",
+            //        Diagnosis = "Healthy",
+            //        TestsPerformed = "Blood test",
+            //        TreatmenPlans = "Regular exercise",
+            //        FamilyMedicalHistory = "None",
+            //        CreatedAt = DateTime.Now.ToUniversalTime(),
+            //        UpdatedAt = DateTime.Now.ToUniversalTime(),
+            //        IsDeleted = false
+            //    }
+            //};
 
-            await context.Appointments.AddRangeAsync(appointments);
-            await context.MedicalHistories.AddRangeAsync(medicalHistories);
+            //await context.Appointments.AddRangeAsync(appointments);
+            //await context.MedicalHistories.AddRangeAsync(medicalHistories);
             await context.SaveChangesAsync();
         }
     }

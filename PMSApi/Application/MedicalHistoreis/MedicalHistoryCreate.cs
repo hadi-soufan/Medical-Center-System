@@ -1,70 +1,95 @@
-﻿using MediatR;
-using Persistence;
-using Domain.Entities;
-using Application.Appoitments;
-using FluentValidation;
-using Application.MedicalHistoreis;
+﻿    using MediatR;
+    using Persistence;
+    using Domain.Entities;
+    using Application.Appoitments;
+    using FluentValidation;
+    using Application.MedicalHistoreis;
+    using Application.Core;
+using Microsoft.EntityFrameworkCore;
 
-namespace Application.MedicalHistories
-{
-    /// <summary>
-    /// Represents a command to create a new medical history.
-    /// </summary>
-    public class MedicalHistoryCreate
+    namespace Application.MedicalHistories
     {
         /// <summary>
-        /// Represents the command to create a new medical history.
+        /// Represents a command to create a new medical history.
         /// </summary>
-        public class Command : IRequest
+        public class MedicalHistoryCreate
         {
             /// <summary>
-            /// Gets or sets the medical history to be created.
+            /// Represents the command to create a new medical history.
             /// </summary>
-            public MedicalHistory MedicalHistory { get; set; }
-        }
-
-        public class CommandValidator : AbstractValidator<Command>
-        {
-            public CommandValidator()
+            public class Command : IRequest<Result<Unit>>
             {
-                RuleFor(x => x.MedicalHistory).SetValidator(new MedicalHistoryValidators());
+                /// <summary>
+                /// Gets or sets the medical history to be created.
+                /// </summary>
+                public MedicalHistory MedicalHistory { get; set; }
             }
-        }
 
-        /// <summary>
-        /// Represents the handler for the <see cref="Command"/> to create a new medical history.
-        /// </summary>
-        public class Handler : IRequestHandler<Command>
-        {
-            private readonly ApplicationDbContext _context;
-
-            /// <summary>
-            /// Initializes a new instance of the <see cref="Handler"/> class with the specified application database context.
-            /// </summary>
-            /// <param name="context">The application database context.</param>
-            public Handler(ApplicationDbContext context)
+            public class CommandValidator : AbstractValidator<Command>
             {
-                _context = context;
+                public CommandValidator()
+                {
+                    RuleFor(x => x.MedicalHistory).SetValidator(new MedicalHistoryValidators());
+                }
             }
 
             /// <summary>
-            /// Handles the command to create a new medical history.
+            /// Represents the handler for the <see cref="Command"/> to create a new medical history.
             /// </summary>
-            /// <param name="request">The command representing the medical history to be created.</param>
-            /// <param name="cancellationToken">The cancellation token.</param>
-            /// <returns>A task representing the asynchronous operation. The task result is a <see cref="Unit"/>.</returns>
-            public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+            public class Handler : IRequestHandler<Command, Result<Unit>>
             {
+                private readonly ApplicationDbContext _context;
+
+                /// <summary>
+                /// Initializes a new instance of the <see cref="Handler"/> class with the specified application database context.
+                /// </summary>
+                /// <param name="context">The application database context.</param>
+                public Handler(ApplicationDbContext context)
+                {
+                    _context = context;
+                }
+
+                /// <summary>
+                /// Handles the command to create a new medical history.
+                /// </summary>
+                /// <param name="request">The command representing the medical history to be created.</param>
+                /// <param name="cancellationToken">The cancellation token.</param>
+                /// <returns>A task representing the asynchronous operation. The task result is a <see cref="Unit"/>.</returns>
+                public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+                {
+                //request.MedicalHistory.CreatedAt = DateTime.UtcNow;
+                //request.MedicalHistory.UpdatedAt = DateTime.UtcNow;
+
+                //_context.MedicalHistories.Add(request.MedicalHistory);
+
+                //var result = await _context.SaveChangesAsync() > 0;
+
+                //if (!result) return Result<Unit>.Failure("Failed to create new Appointment");
+
+                //return Result<Unit>.Success(Unit.Value);
+
+                var patient = await _context.Patients
+                    .Include(p => p.User)
+                    .SingleOrDefaultAsync(p => p.PatientId == request.MedicalHistory.PatientId, cancellationToken);
+
+                if (patient == null)
+                    return Result<Unit>.Failure("Patient not found");
+
                 request.MedicalHistory.CreatedAt = DateTime.UtcNow;
                 request.MedicalHistory.UpdatedAt = DateTime.UtcNow;
 
+                request.MedicalHistory.PatientName = patient.User.DisplayName;
+
                 _context.MedicalHistories.Add(request.MedicalHistory);
 
-                await _context.SaveChangesAsync();
+                var result = await _context.SaveChangesAsync() > 0;
 
-                return Unit.Value;
+                if (!result)
+                    return Result<Unit>.Failure("Failed to create new medical history");
+
+                return Result<Unit>.Success(Unit.Value);
+            }
             }
         }
-    }
 
-}
+    }

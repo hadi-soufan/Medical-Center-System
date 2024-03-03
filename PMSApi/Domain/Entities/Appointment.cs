@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities
 {
@@ -27,5 +28,13 @@ namespace Domain.Entities
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; }
         public bool IsCancelled { get; set; }
+        public Guid PatientId { get; set; }
+
+        [ForeignKey("PatientId")]
+        public Patient Patient{ get; set; }
+
+        public Guid DoctorId { get; set; }
+        [ForeignKey("DoctorId")]
+        public Doctor Doctor { get; set; }
     }
 }
