@@ -1,5 +1,4 @@
-﻿using Application.Appointments;
-using Application.Receptionist;
+﻿using Application.Receptionist;
 using Application.Receptionists;
 using Microsoft.AspNetCore.Mvc;
 
