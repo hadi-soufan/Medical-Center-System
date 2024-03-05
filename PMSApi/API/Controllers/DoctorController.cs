@@ -4,8 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    /// <summary>
+    /// Controller responsible for managing doctor entities.
+    /// </summary>
     public class DoctorController : BaseApiController
     {
+        /// <inheritdoc />
+        // GET: /api/doctor/all-doctors
         [HttpGet("all-doctors")]
         public async Task<IActionResult> GetDoctors()
         {
@@ -21,6 +26,8 @@ namespace API.Controllers
             return HandleResult(await Mediator.Send(new DoctorDetails.Query { Id = id }));
         }
 
+        /// <inheritdoc />
+        // PUT: /api/doctor/
         [HttpPut("{id}")]
         public async Task<ActionResult<Unit>> UpdateDoctor(Guid id, DoctorDto doctorDto)
         {
@@ -28,6 +35,8 @@ namespace API.Controllers
             
         }
 
+        /// <inheritdoc />
+        // DELETE: /api/doctor/
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDocotr(Guid id)
         {
