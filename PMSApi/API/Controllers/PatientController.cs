@@ -1,10 +1,11 @@
-﻿using Application.Appoitments;
-using Application.Patients;
-using Domain.Entities;
+﻿using Application.Patients;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    /// <summary>
+    /// Controller responsible for managing patient entities.
+    /// </summary>
     public class PatientController : BaseApiController
     {
         /// <inheritdoc />
