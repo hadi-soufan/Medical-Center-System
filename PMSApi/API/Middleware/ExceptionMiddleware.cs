@@ -4,12 +4,21 @@ using System.Text.Json;
 
 namespace API.Middleware
 {
+    /// <summary>
+    /// Middleware for handling exceptions and returning appropriate responses.
+    /// </summary>
     public class ExceptionMiddleware
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<ExceptionMiddleware> _logger;
         private readonly IHostEnvironment _env;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExceptionMiddleware"/> class.
+        /// </summary>
+        /// <param name="next">The next request delegate.</param>
+        /// <param name="logger">The logger.</param>
+        /// <param name="env">The hosting environment.</param>
         public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger, IHostEnvironment env)
         {
             _next = next;
@@ -17,6 +26,10 @@ namespace API.Middleware
             _env = env;
         }
 
+        /// <summary>
+        /// Invokes the middleware asynchronously.
+        /// </summary>
+        /// <param name="context">The HTTP context.</param>
         public async Task InvokeAsync(HttpContext context)
         {
             try
