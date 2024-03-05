@@ -1,5 +1,8 @@
 ﻿namespace API.DTOs
 {
+    /// <summary>
+    /// Data transfer object for user information.
+    /// </summary>
     public class UserDto
     {
         public string DisplayName { get; set; }
