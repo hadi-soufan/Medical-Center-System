@@ -2,6 +2,9 @@
 
 namespace API.DTOs
 {
+    /// <summary>
+    /// Data transfer object for user registration information.
+    /// </summary>
     public class RegisterDto
     {
         [Required]
