@@ -9,8 +9,17 @@ using System.Text;
 
 namespace API.Extensions
 {
+    /// <summary>
+    /// Extension methods for configuring identity services.
+    /// </summary>
     public static class IdentityServiceExtension
     {
+        /// <summary>
+        /// Adds identity services to the specified <see cref="IServiceCollection"/>.
+        /// </summary>
+        /// <param name="services">The <see cref="IServiceCollection"/> to add the services to.</param>
+        /// <param name="config">The <see cref="IConfiguration"/> instance.</param>
+        /// <returns>The modified <see cref="IServiceCollection"/> instance.</returns>
         public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration config) 
         {
             Env.Load();
