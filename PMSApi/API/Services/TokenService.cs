@@ -7,8 +7,16 @@ using System.Text;
 
 namespace API.Services
 {
+    /// <summary>
+    /// Service for handling JWT token generation.
+    /// </summary>
     public class TokenService
     {
+        /// <summary>
+        /// Creates a JWT token for the specified user.
+        /// </summary>
+        /// <param name="user">The user for whom the token is being created.</param>
+        /// <returns>The JWT token string.</returns>
         public string CreateToken(AppUser user)
         {
             Env.Load();
