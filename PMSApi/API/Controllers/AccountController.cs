@@ -1,17 +1,20 @@
 ﻿using API.DTOs;
 using API.Services;
-using Application.Appointments;
 using Application.Profile;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using System.Security.Claims;
 
 namespace API.Controllers
 {
+    /// <summary>
+    /// Controller responsible for managing user accounts.
+    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     public class AccountController : BaseApiController
@@ -20,6 +23,12 @@ namespace API.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly TokenService _tokenService;
 
+        /// <summary>
+        /// Constructor for AccountController.
+        /// </summary>
+        /// <param name="context">ApplicationDbContext instance.</param>
+        /// <param name="userManager">UserManager instance.</param>
+        /// <param name="tokenService">TokenService instance.</param>
         public AccountController(ApplicationDbContext context, UserManager<AppUser> userManager, TokenService tokenService)
         {
             _context = context;
@@ -27,6 +36,8 @@ namespace API.Controllers
             _tokenService = tokenService;
         }
 
+        /// <inheritdoc />
+        // GET: /api/account/
         [Authorize]
         [HttpGet]
         public async Task<ActionResult<UserDto>> GetCurrentUser()
@@ -36,6 +47,8 @@ namespace API.Controllers
             return CreateUserObject(user);
         }
 
+        /// <inheritdoc />
+        // POST: /api/account/login
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
@@ -54,6 +67,8 @@ namespace API.Controllers
             return Unauthorized();
         }
 
+        /// <inheritdoc />
+        // POST: /api/account/register
         [AllowAnonymous]
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
@@ -120,6 +135,28 @@ namespace API.Controllers
                     _context.Patients.Add(patient);
                     await _userManager.AddToRoleAsync(user, "Patient");
                 }
+                else if (registerDto.Role == "Receptionist")
+                {
+                    var receptionist = new Receptionist
+                    {
+                        ReceptionistId = Guid.NewGuid(),
+                        UserId = user.Id
+                    };
+
+                    _context.Receptionists.Add(receptionist);
+                    await _userManager.AddToRoleAsync(user, "Receptionist");
+                }
+                else if (registerDto.Role == "Staff")
+                {
+                    var staff = new Staff
+                    {
+                        StaffId = Guid.NewGuid(),
+                        UserId = user.Id
+                    };
+
+                    _context.Staffs.Add(staff);
+                    await _userManager.AddToRoleAsync(user, "Staff");
+                }
 
                 await _context.SaveChangesAsync();
 
@@ -129,6 +166,8 @@ namespace API.Controllers
             return BadRequest(result.Errors);
         }
 
+        /// <inheritdoc />
+        // GET: /api/account/all-users
         [HttpGet("all-users")]
         //[Authorize(Roles = "admin")]
         public async Task<ActionResult<List<AppUser>>> GetUsers()
@@ -148,5 +187,7 @@ namespace API.Controllers
                 Role = user.Role
             };
         }
+
+        
     }
 }
