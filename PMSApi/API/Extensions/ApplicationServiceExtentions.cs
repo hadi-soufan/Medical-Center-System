@@ -11,8 +11,17 @@ using Application.Appointments;
 
 namespace API.Extensions
 {
+    /// <summary>
+    /// Extension methods for configuring application services.
+    /// </summary>
     public static class ApplicationServiceExtentions
     {
+        /// <summary>
+        /// Adds application services to the specified <see cref="IServiceCollection"/>.
+        /// </summary>
+        /// <param name="services">The <see cref="IServiceCollection"/> to add the services to.</param>
+        /// <param name="config">The <see cref="IConfiguration"/> instance.</param>
+        /// <returns>The modified <see cref="IServiceCollection"/> instance.</returns>
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
         {
             services.AddEndpointsApiExplorer();
