@@ -8,8 +8,14 @@ using Persistence;
 
 namespace Application.Appointments
 {
+    /// <summary>
+    /// Provides functionality to create a new appointment.
+    /// </summary>
     public class AppointmentCreate
     {
+        /// <summary>
+        /// Command to create a new appointment.
+        /// </summary>
         public class Command : IRequest<Result<Unit>>
         {
             public Appointment Appointment { get; set; }
@@ -17,6 +23,9 @@ namespace Application.Appointments
             public string DoctorUsername { get; set; }
         }
 
+        /// <summary>
+        /// Validator for the AppointmentCreate command.
+        /// </summary>
         public class CommandValidator : AbstractValidator<Command>
         {
             public CommandValidator()
@@ -25,30 +34,33 @@ namespace Application.Appointments
             }
         }
 
-        public class Handler : IRequestHandler<Command, Result<Unit>>
+        /// <summary>
+        /// Handler to process the AppointmentCreate command.
+        /// </summary>
+        public class Handler(ApplicationDbContext context) : IRequestHandler<Command, Result<Unit>>
         {
-            private readonly ApplicationDbContext _context;
-
-            public Handler(ApplicationDbContext context)
-            {
-                _context = context;
-            }
-
+            /// <summary>
+            /// Handles the AppointmentCreate command.
+            /// </summary>
+            /// <param name="request">The create command.</param>
+            /// <param name="cancellationToken">The cancellation token.</param>
+            /// <returns>A result indicating success or failure of the create operation.</returns>
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 try
                 {
-                    var user = await _context.Users
+                    var user = await context.Users
                         .Include(u => u.Patients)
+                        .Where(u => !u.IsCancelled)
                         .SingleOrDefaultAsync(u => u.UserName == request.PatientUsername, cancellationToken);
 
                     if (user is null) return Result<Unit>.Failure("User not found");
 
                     var patient = user.Patients.FirstOrDefault();
 
-                    if (patient is null) return Result<Unit>.Failure("Patient not found for the user");
+                    if (patient is null) return Result<Unit>.Failure("Patient not found");
 
-                    var doctor = await _context.Doctors
+                    var doctor = await context.Doctors
                         .Include(d => d.User) 
                         .FirstOrDefaultAsync(d => d.User.UserName == request.DoctorUsername, cancellationToken);
 
@@ -57,11 +69,8 @@ namespace Application.Appointments
                     request.Appointment.PatientId = patient.PatientId;
                     request.Appointment.DoctorId = doctor.DoctorId;
 
-                    request.Appointment.CreatedAt = DateTime.UtcNow;
-                    request.Appointment.UpdatedAt = DateTime.UtcNow;
-
-                    _context.Appointments.Add(request.Appointment);
-                    var result = await _context.SaveChangesAsync(cancellationToken) > 0;
+                    context.Appointments.Add(request.Appointment);
+                    var result = await context.SaveChangesAsync(cancellationToken) > 0;
 
                     if (!result) return Result<Unit>.Failure("Failed to create new appointment");
 
