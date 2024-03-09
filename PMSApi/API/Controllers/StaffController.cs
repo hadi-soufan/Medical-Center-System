@@ -1,4 +1,4 @@
-﻿using Application.Staff;
+﻿using Application.Staffs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
