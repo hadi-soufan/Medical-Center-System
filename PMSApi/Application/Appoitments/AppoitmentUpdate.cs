@@ -1,52 +1,60 @@
-﻿using Application.Appoitments;
-using Application.Core;
+﻿using Application.Core;
 using Domain.Entities;
 using MediatR;
 using Persistence;
 
 namespace Application.Appointments
 {
+    /// <summary>
+    /// Provides functionality to update an appointment.
+    /// </summary>
     public class AppointmentUpdate
     {
+        /// <summary>
+        /// Command to update an appointment.
+        /// </summary>
         public class Command : IRequest<Result<Unit>>
         {
             public Guid Id { get; set; }
             public Appointment Appointment { get; set; }
         }
 
-        public class Handler : IRequestHandler<Command, Result<Unit>>
+        /// <summary>
+        /// Handler to process the AppointmentUpdate command.
+        /// </summary>
+        public class Handler(ApplicationDbContext context) : IRequestHandler<Command, Result<Unit>>
         {
-            private readonly ApplicationDbContext _context;
-
-            public Handler(ApplicationDbContext context)
-            {
-                _context = context;
-            }
-
+            /// <summary>
+            /// Handles the AppointmentUpdate command.
+            /// </summary>
+            /// <param name="request">The update command.</param>
+            /// <param name="cancellationToken">The cancellation token.</param>
+            /// <returns>A result indicating success or failure of the update operation.</returns>
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var appointment = await _context.Appointments.FindAsync(request.Id);
-
-                if (appointment == null)
+                try
                 {
-                    return Result<Unit>.Failure("Appointment not found");
+                    var appointment = await context.Appointments.FindAsync(new object[] { request.Id }, cancellationToken);
+
+                    if (appointment is null) return Result<Unit>.Failure("Appointment not found");
+
+                    appointment.AppointmentDate = request.Appointment.AppointmentDate;
+                    appointment.AppointmentStatus = request.Appointment.AppointmentStatus;
+                    appointment.AppointmentType = request.Appointment.AppointmentType;
+                    appointment.Notes = request.Appointment.Notes;
+
+                    appointment.UpdatedAt = DateOnly.FromDateTime(DateTime.UtcNow);
+
+                    var result = await context.SaveChangesAsync(cancellationToken) > 0;
+
+                    if (!result) return Result<Unit>.Failure("Failed to update appointment");
+
+                    return Result<Unit>.Success(Unit.Value);
                 }
-
-                // Update the appointment properties
-                appointment.AppointmentDate = request.Appointment.AppointmentDate;
-                appointment.AppointmentStatus = request.Appointment.AppointmentStatus;
-                appointment.AppointmentType = request.Appointment.AppointmentType;
-                appointment.Notes = request.Appointment.Notes;
-
-                // Save changes to the database
-                var result = await _context.SaveChangesAsync(cancellationToken) > 0;
-
-                if (!result)
+                catch (Exception ex)
                 {
-                    return Result<Unit>.Failure("Failed to update appointment");
+                    return Result<Unit>.Failure(ex.Message);
                 }
-
-                return Result<Unit>.Success(Unit.Value);
             }
         }
     }
