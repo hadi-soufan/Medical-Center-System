@@ -1,43 +1,53 @@
 ﻿using Application.Core;
 using MediatR;
 using Persistence;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Doctors
 {
+    /// <summary>
+    /// Provides functionality to delete a doctor.
+    /// </summary>
     public class DoctorDelete
     {
+        /// <summary>
+        /// Command to delete a doctor.
+        /// </summary>
         public class Command : IRequest<Result<Unit>>
         {
             public Guid DoctorId { get; set; }
         }
 
-        public class Handler : IRequestHandler<Command, Result<Unit>>
+        /// <summary>
+        /// Handler to process the DoctorDelete command.
+        /// </summary>
+        public class Handler(ApplicationDbContext context) : IRequestHandler<Command, Result<Unit>>
         {
-            private readonly ApplicationDbContext _context;
-
-            public Handler(ApplicationDbContext context)
-            {
-                _context = context;
-            }
-
+            /// <summary>
+            /// Handles the DoctorDelete command.
+            /// </summary>
+            /// <param name="request">The delete command.</param>
+            /// <param name="cancellationToken">The cancellation token.</param>
+            /// <returns>A result indicating success or failure of the delete operation.</returns>
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var doctor = await _context.Doctors.FindAsync(request.DoctorId);
+                try
+                {
+                    var doctor = await context.Doctors.FindAsync(new object[] { request.DoctorId }, cancellationToken: cancellationToken);
 
-                if (doctor is null) return Result<Unit>.Failure("Doctor not found");
+                    if (doctor is null) return Result<Unit>.Failure("Doctor not found");
 
-                _context.Doctors.Remove(doctor);
+                    doctor.IsDeleted = true;
 
-                var result = await _context.SaveChangesAsync() > 0;
+                    var result = await context.SaveChangesAsync(cancellationToken) > 0;
 
-                if (!result) return Result<Unit>.Failure("Doctor was not deleted");
+                    if (!result) return Result<Unit>.Failure("Doctor was not deleted");
 
-                return Result<Unit>.Success(Unit.Value);
+                    return Result<Unit>.Success(Unit.Value);
+                }
+                catch (Exception ex)
+                {
+                    return Result<Unit>.Failure(ex.Message);
+                }
 
             }
         }
