@@ -157,6 +157,31 @@ namespace API.Controllers
                     _context.Staffs.Add(staff);
                     await _userManager.AddToRoleAsync(user, "Staff");
                 }
+                else if (registerDto.Role == "Nurse")
+                {
+                    var nurse = new Nurse
+                    {
+                        NurseId = Guid.NewGuid(),
+                        UserId = user.Id
+                    };
+
+                    _context.Nurses.Add(nurse);
+                    await _userManager.AddToRoleAsync(user, "Nurse");
+                }
+                else if (registerDto.Role == "Accountant")
+                {
+                    var accountant = new Accountant
+                    {
+                        AccountantId = Guid.NewGuid(),
+                        UserId = user.Id
+                    };
+
+                    _context.Accountants.Add(accountant);
+                    await _userManager.AddToRoleAsync(user, "Accountant");
+                }
+
+
+                
 
                 await _context.SaveChangesAsync();
 
@@ -174,8 +199,6 @@ namespace API.Controllers
         {
             return HandleResult(await Mediator.Send(new UserList.Query()));
         }
-
-
 
         private UserDto CreateUserObject(AppUser user)
         {
