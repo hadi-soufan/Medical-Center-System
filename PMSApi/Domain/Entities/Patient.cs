@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities
 {
+    /// <summary>
+    /// Represents patient entity.
+    /// </summary>
     public class Patient
     {
         public Guid PatientId { get; set; }
