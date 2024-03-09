@@ -2,6 +2,9 @@
 
 namespace Application.Doctors
 {
+    /// <summary>
+    /// Data transfer object for doctor information.
+    /// </summary>
     public class DoctorDto
     {
         public Guid DoctorId { get; set; }
@@ -55,6 +58,7 @@ namespace Application.Doctors
         public int InsuranceId { get; set; }
 
         public int DoctorLicenseId { get; set; }
+        public int AppointmentCount { get; set; }
 
     }
 }
