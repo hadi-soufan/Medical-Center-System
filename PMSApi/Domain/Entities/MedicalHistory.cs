@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Domain.Entities
 {
     /// <summary>
-    /// Represents medical history information for a patient.
+    /// Represents medical history entity for a patient.
     /// </summary>
     public class MedicalHistory
     {
@@ -45,11 +45,9 @@ namespace Domain.Entities
         [StringLength(255)]
         public string FamilyMedicalHistory { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-
-        public DateTime UpdatedAt { get; set; }
-
-        public bool IsDeleted { get; set; }
+        public DateOnly CreatedAt { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
+        public DateOnly UpdatedAt { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         public Guid PatientId { get; set; }
         
