@@ -1,47 +1,52 @@
 ﻿using Application.Core;
 using AutoMapper;
+using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application.Patients
 {
+    /// <summary>
+    /// Represents a query to retrieve a list of patients.
+    /// </summary>
     public class PatientList
     {
+        /// <summary>
+        /// Represents the query to retrieve a list of patients.
+        /// </summary>
         public class Query : IRequest<Result<List<PatientDto>>> { }
 
-        public class Handler : IRequestHandler<Query, Result<List<PatientDto>>>
+        /// <summary>
+        /// Handles the patient list query.
+        /// </summary>
+        public class Handler(ApplicationDbContext context, IMapper mapper) : IRequestHandler<Query, Result<List<PatientDto>>>
         {
-            private readonly ApplicationDbContext _context;
-            private readonly IMapper _mapper;
-
-            public Handler(ApplicationDbContext context, IMapper mapper)
-            {
-                _context = context;
-                _mapper = mapper;
-            }
-
+            /// <summary>
+            /// Handles the patient list query.
+            /// </summary>
+            /// <param name="request">The patient list query.</param>
+            /// <param name="cancellationToken">The cancellation token.</param>
+            /// <returns>A result containing the list of patients.</returns>
             public async Task<Result<List<PatientDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var patients = await _context.Patients
+                try
+                {
+                    var patients = await context.Patients
                     .Include(p => p.User)
-                    .Select(p => new PatientDto
-                    {
-                        PatientId = p.PatientId,
-                        DisplayName = p.User.DisplayName,
-                        Username = p.User.UserName,
-                        Email = p.User.Email,
-                        PhoneNumber = p.User.PhoneNumber,
-                        DateOfBirth = p.User.DateOfBirth,
-                        Gender = p.User.Gender,
-                        BloodType = p.User.BloodType,
-                        Address = p.User.Address,
-                        Occupation = p.User.Occupation,
-                        InsuranceId = p.User.InsuranceId
-                    })
-                    .ToListAsync();
+                    .Where(p => !p.IsDeleted)
+                    .ToListAsync(cancellationToken);
 
-                return Result<List<PatientDto>>.Success(patients);
+                    if (patients.Count is 0) return Result<List<PatientDto>>.Failure("No patient data found");
+
+                    var patientDtos = mapper.Map<List<Patient>, List<PatientDto>>(patients);
+
+                    return Result<List<PatientDto>>.Success(patientDtos);
+                }
+                catch (Exception ex)
+                {
+                    return Result<List<PatientDto>>.Failure(ex.Message);
+                }
             }
 
         }
