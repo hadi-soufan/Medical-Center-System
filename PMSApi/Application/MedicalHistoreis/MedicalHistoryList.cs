@@ -1,4 +1,6 @@
 ﻿using Application.Core;
+using Application.MedicalHistoreis;
+using AutoMapper;
 using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -14,61 +16,42 @@ namespace Application.MedicalHistories
         /// <summary>
         /// Represents the query to retrieve a list of medical histories.
         /// </summary>
-        public class Query : IRequest<Result<List<MedicalHistory>>> { }
+        public class Query : IRequest<Result<List<MedicalHistoryDto>>> { }
 
         /// <summary>
-        /// Represents the handler for the <see cref="Query"/> to retrieve a list of medical histories.
+        /// Handler for processing the MedicalHistoryList query.
         /// </summary>
-        public class Handler : IRequestHandler<Query, Result<List<MedicalHistory>>>
+        public class Handler(ApplicationDbContext context, IMapper mapper) : IRequestHandler<Query, Result<List<MedicalHistoryDto>>>
         {
-            private readonly ApplicationDbContext _context;
-
             /// <summary>
-            /// Initializes a new instance of the <see cref="Handler"/> class with the specified application database context.
+            /// Handles the MedicalHistoryList query.
             /// </summary>
-            /// <param name="context">The application database context.</param>
-            public Handler(ApplicationDbContext context)
-            {
-                _context = context;
-            }
-
-            /// <summary>
-            /// Handles the query to retrieve a list of medical histories.
-            /// </summary>
-            /// <param name="request">The query representing the request to retrieve the list of medical histories.</param>
+            /// <param name="request">The query request.</param>
             /// <param name="cancellationToken">The cancellation token.</param>
-            /// <returns>A task representing the asynchronous operation. The task result is the list of <see cref="MedicalHistory"/> objects.</returns>
-            public async Task<Result<List<MedicalHistory>>> Handle(Query request, CancellationToken cancellationToken)
+            /// <returns>A result containing the list of medical history DTOs.</returns>
+            public async Task<Result<List<MedicalHistoryDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var medicalHistories = await _context.MedicalHistories
+                try
+                {
+                    var medicalHistories = await context.MedicalHistories
                     .Include(mh => mh.Patient)
                     .ThenInclude(p => p.User)
-                    .Select(mh => new MedicalHistory
-                    {
-                        MedicalHistoryId = mh.MedicalHistoryId,
-                        Height = mh.Height,
-                        Weight = mh.Weight,
-                        MedicalProblems = mh.MedicalProblems,
-                        MentalHealthProblems = mh.MentalHealthProblems,
-                        Medicines = mh.Medicines,
-                        Allergics = mh.Allergics,
-                        SugreriesHistory = mh.SugreriesHistory,
-                        Vaccines = mh.Vaccines,
-                        Diagnosis = mh.Diagnosis,
-                        TestsPerformed = mh.TestsPerformed,
-                        TreatmenPlans = mh.TreatmenPlans,
-                        FamilyMedicalHistory = mh.FamilyMedicalHistory,
-                        PatientId = mh.PatientId,
-                        PatientName = mh.Patient.User.DisplayName
-                    })
+                    .Where(mh => !mh.IsDeleted)
                     .ToListAsync(cancellationToken);
 
-                return Result<List<MedicalHistory>>.Success(medicalHistories);
+                    if (medicalHistories.Count is 0) return Result<List<MedicalHistoryDto>>.Failure("No Medical History Data Found");
 
+                    var medicalHistoryDtos = mapper.Map<List<MedicalHistory>, List<MedicalHistoryDto>>(medicalHistories);
 
-                //return Result<List<MedicalHistory>>.Success(await _context.MedicalHistories.ToListAsync(cancellationToken: cancellationToken));
+                    return Result<List<MedicalHistoryDto>>.Success(medicalHistoryDtos);
+
+                }
+                catch (Exception ex)
+                {
+                    return Result<List<MedicalHistoryDto>>.Failure(ex.Message);
+                }
             }
+
         }
     }
-
 }
