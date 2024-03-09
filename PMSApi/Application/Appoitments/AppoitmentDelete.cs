@@ -1,59 +1,56 @@
 ﻿using Application.Core;
 using MediatR;
-
 using Persistence;
 
-/// <summary>
-/// Represents a command to delete an appointment.
-/// </summary>
-public class AppointmentDelete
+namespace Application.Appointments
 {
     /// <summary>
-    /// Represents the command to delete an appointment.
+    /// Provides functionality to delete an appointment.
     /// </summary>
-    public class Command : IRequest<Result<Unit>>
+    public class AppointmentDelete
     {
-        /// <summary>
-        /// Gets or sets the ID of the appointment to be deleted.
-        /// </summary>
-        public Guid Id { get; set; }
-    }
-
-    /// <summary>
-    /// Represents the handler for the <see cref="Command"/> to delete an appointment.
-    /// </summary>
-    public class Handler : IRequestHandler<Command, Result<Unit>>
-    {
-        private readonly ApplicationDbContext _context;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Handler"/> class with the specified application database context.
+        /// Command to delete an appointment.
         /// </summary>
-        /// <param name="context">The application database context.</param>
-        public Handler(ApplicationDbContext context)
+        public class Command : IRequest<Result<Unit>>
         {
-            _context = context;
+            public Guid Id { get; set; }
         }
 
         /// <summary>
-        /// Handles the command to delete an appointment.
+        /// Handler to process the AppointmentDelete command.
         /// </summary>
-        /// <param name="request">The command representing the request to delete an appointment.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>A task representing the asynchronous operation. The task result is the completion status.</returns>
-        public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+        public class Handler(ApplicationDbContext context) : IRequestHandler<Command, Result<Unit>>
         {
-            var appointment = await _context.Appointments.FindAsync(request.Id);
 
-            if (appointment is null) return null;
+            /// <summary>
+            /// Handles the AppointmentDelete command.
+            /// </summary>
+            /// <param name="request">The delete command.</param>
+            /// <param name="cancellationToken">The cancellation token.</param>
+            /// <returns>A result indicating success or failure of the delete operation.</returns>
+            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+            {
+                try
+                {
+                    var appointment = await context.Appointments.FindAsync(new object[] { request.Id }, cancellationToken: cancellationToken);
 
-            _context.Remove(appointment);
+                    if (appointment is null) return null;
 
-            var result = await _context.SaveChangesAsync() > 0;
+                    appointment.IsCancelled = true;
 
-            if (!result) return Result<Unit>.Failure("Failed to Delete the Appointment");
+                    var result = await context.SaveChangesAsync(cancellationToken) > 0;
 
-            return Result<Unit>.Success(Unit.Value);
+                    if (!result) return Result<Unit>.Failure("Failed to Delete the Appointment");
+
+                    return Result<Unit>.Success(Unit.Value);
+                }
+                catch (Exception ex)
+                {
+                    return Result<Unit>.Failure(ex.Message);
+                }
+            }
         }
     }
 }
