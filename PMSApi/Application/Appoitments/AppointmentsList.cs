@@ -1,5 +1,8 @@
-﻿using Application.Appoitments;
+﻿using Application.Accountants;
+using Application.Appoitments;
 using Application.Core;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -7,53 +10,43 @@ using Persistence;
 namespace Application.Appointments
 {
     /// <summary>
-    /// Handles listing appointments.
+    /// Provides functionality to list appointments.
     /// </summary>
     public class AppointmentsList
-        {
+    {
         /// <summary>
         /// Query to retrieve a list of appointments.
         /// </summary>
-        public class Query : IRequest<Result<List<AppointmentDto>>>
-            {
-
-            }
+        public class Query : IRequest<Result<List<AppointmentDto>>> {}
 
         /// <summary>
-        /// Handler for the appointment list query.
+        /// Handler to process the query and return a list of appointments.
         /// </summary>
-        public class Handler : IRequestHandler<Query, Result<List<AppointmentDto>>>
+        public class Handler(ApplicationDbContext context, IMapper mapper) : IRequestHandler<Query, Result<List<AppointmentDto>>>
         {
-            private readonly ApplicationDbContext _context;
-
-            public Handler(ApplicationDbContext context)
-            {
-                _context = context;
-            }
-
             /// <summary>
-            /// Handles the appointment list query.
+            /// Handles the query to retrieve a list of appointments.
             /// </summary>
             /// <param name="request">The query request.</param>
             /// <param name="cancellationToken">The cancellation token.</param>
-            /// <returns>A task representing the asynchronous operation that returns the result of the query.</returns>
+            /// <returns>A result containing a list of appointment DTOs.</returns>
             public async Task<Result<List<AppointmentDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var appointments = await _context.Appointments
+                try
+                {
+                    var appointments = await context.Appointments
                     .Include(a => a.Patient)
-                    .Select(a => new AppointmentDto
-                    {
-                        AppointmentId = a.AppointmentId,
-                        AppointmentDate = a.AppointmentDate,
-                        AppointmentStatus = a.AppointmentStatus,
-                        AppointmentType = a.AppointmentType,
-                        Notes = a.Notes,
-                        PatientUsername = a.Patient.User.UserName,
-                        DoctorUsername = a.Doctor.User.UserName
-                    })
+                    .Include(a => a.Doctor)
+                    .Where(a => !a.IsCancelled)
+                    .ProjectTo<AppointmentDto>(mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
 
-                return Result<List<AppointmentDto>>.Success(appointments);
+                    return Result<List<AppointmentDto>>.Success(appointments);
+                }
+                catch (Exception ex)
+                {
+                    return Result<List<AppointmentDto>>.Failure(ex.Message);
+                }
             }
         }
     }
