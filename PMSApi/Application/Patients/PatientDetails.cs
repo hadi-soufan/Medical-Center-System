@@ -4,59 +4,52 @@ using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Application.Patients
 {
+    /// <summary>
+    /// Represents a query to retrieve details of a patient.
+    /// </summary>
     public class PatientDetails
     {
+        /// <summary>
+        /// Represents the query to retrieve details of a patient.
+        /// </summary>
         public class Query : IRequest<Result<PatientDto>>
         {
             public Guid Id { get; set; }
         }
 
-        public class Handler : IRequestHandler<Query, Result<PatientDto>>
+        /// <summary>
+        /// Handles the patient details query.
+        /// </summary>
+        public class Handler(ApplicationDbContext context, IMapper mapper) : IRequestHandler<Query, Result<PatientDto>>
         {
-            private readonly ApplicationDbContext _context;
-            private readonly IMapper _mapper;
-
-            public Handler(ApplicationDbContext context, IMapper mapper)
-            {
-                _context = context;
-                _mapper = mapper;
-            }
-
+            /// <summary>
+            /// Handles the patient details query.
+            /// </summary>
+            /// <param name="request">The patient details query.</param>
+            /// <param name="cancellationToken">The cancellation token.</param>
+            /// <returns>A result containing the patient details.</returns>
             public async Task<Result<PatientDto>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var patient = await _context.Patients
-                    .FirstOrDefaultAsync(p => p.PatientId == request.Id);
-
-                if (patient == null)
-                    return Result<PatientDto>.Failure("Patient not found");
-
-                var user = await _context.Users
-                    .FirstOrDefaultAsync(u => u.Id == patient.UserId);
-
-                if (user == null)
-                    return Result<PatientDto>.Failure("User not found");
-
-                var patientDto = new PatientDto
+                try
                 {
-                    PatientId = patient.PatientId,
-                    DisplayName = patient.User.DisplayName,
-                    Username = patient.User.UserName,
-                    Email = patient.User.Email,
-                    PhoneNumber = patient.User.PhoneNumber,
-                    DateOfBirth = patient.User.DateOfBirth,
-                    Gender = patient.User.Gender,
-                    BloodType = patient.User.BloodType,
-                    Address = patient.User.Address,
-                    Occupation = patient.User.Occupation,
-                    InsuranceId = patient.User.InsuranceId
-                };
+                    var patient = await context.Patients
+                    .Include(p => p.User)
+                    .Where(p => !p.IsDeleted)
+                    .FirstOrDefaultAsync(p => p.PatientId == request.Id, cancellationToken);
 
-                return Result<PatientDto>.Success(patientDto);
+                    if (patient is null) return Result<PatientDto>.Failure("Patient not found");
+
+                    var patientDto = mapper.Map<Patient, PatientDto>(patient);
+
+                    return Result<PatientDto>.Success(patientDto);
+                }
+                catch (Exception ex)
+                {
+                    return Result<PatientDto>.Failure(ex.Message);
+                }
             }
 
         }
