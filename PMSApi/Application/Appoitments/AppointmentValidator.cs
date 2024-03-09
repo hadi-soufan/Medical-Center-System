@@ -3,6 +3,9 @@ using FluentValidation;
 
 namespace Application.Appoitments
 {
+    /// <summary>
+    /// Validates properties of the Appointment entity.
+    /// </summary>
     public class AppointmentValidator : AbstractValidator<Appointment>
     {
         public AppointmentValidator() 
