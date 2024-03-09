@@ -2,6 +2,9 @@
 
 namespace Application.Patients
 {
+    /// <summary>
+    /// Data transfer object for doctor information.
+    /// </summary>
     public class PatientDto
     {
         public Guid PatientId { get; set; }
