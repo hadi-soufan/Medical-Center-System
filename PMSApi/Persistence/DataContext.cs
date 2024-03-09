@@ -13,6 +13,10 @@ namespace Persistence
         public DbSet<MedicalHistory> MedicalHistories { get; set; }
         public DbSet<Patient> Patients { get; set; }
         public DbSet<Doctor> Doctors { get; set; }
+        public DbSet<Receptionist> Receptionists{ get; set; }
+        public DbSet<Staff> Staffs { get; set; }
+        public DbSet<Nurse> Nurses { get; set; }
+        public DbSet<Accountant> Accountants { get; set; }
 
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
@@ -36,6 +40,18 @@ namespace Persistence
                 .WithOne()
                 .HasForeignKey<Doctor>(d => d.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Nurse>()
+                .HasOne(d => d.User)
+                .WithOne()
+                .HasForeignKey<Nurse>(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Accountant>()
+              .HasOne(a => a.User)
+              .WithOne()
+              .HasForeignKey<Accountant>(a => a.UserId)
+              .OnDelete(DeleteBehavior.Cascade);
         }
 
 
