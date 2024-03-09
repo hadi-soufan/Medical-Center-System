@@ -15,39 +15,32 @@ namespace Application.MedicalHistoreis
         /// </summary>
         public class Query : IRequest<Result<MedicalHistory>>
         {
-            /// <summary>
-            /// Gets or sets the ID of the medical history for which details are requested.
-            /// </summary>
             public Guid Id { get; set; }
         }
 
         /// <summary>
-        /// Represents the handler for the <see cref="Query"/> to retrieve details of a medical history.
+        /// Handler for processing the MedicalHistoryDetails query.
         /// </summary>
-        public class Handler : IRequestHandler<Query, Result<MedicalHistory>>
+        public class Handler(ApplicationDbContext context) : IRequestHandler<Query, Result<MedicalHistory>>
         {
-            private readonly ApplicationDbContext _context;
-
             /// <summary>
-            /// Initializes a new instance of the <see cref="Handler"/> class with the specified application database context.
+            /// Handles the MedicalHistoryDetails query.
             /// </summary>
-            /// <param name="context">The application database context.</param>
-            public Handler(ApplicationDbContext context)
-            {
-                _context = context;
-            }
-
-            /// <summary>
-            /// Handles the query to retrieve details of a medical history.
-            /// </summary>
-            /// <param name="request">The query representing the ID of the medical history for which details are requested.</param>
+            /// <param name="request">The query request.</param>
             /// <param name="cancellationToken">The cancellation token.</param>
-            /// <returns>A task representing the asynchronous operation. The task result is the <see cref="MedicalHistory"/> object corresponding to the specified ID.</returns>
+            /// <returns>A result containing the medical history details.</returns>
             public async Task<Result<MedicalHistory>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var medicalHistory = await _context.MedicalHistories.FindAsync(request.Id);
+                try
+                {
+                    var medicalHistory = await context.MedicalHistories.FindAsync(new object[] { request.Id }, cancellationToken: cancellationToken);
 
-                return Result<MedicalHistory>.Success(medicalHistory);
+                    return Result<MedicalHistory>.Success(medicalHistory);
+                }
+                catch (Exception ex)
+                {
+                    return Result<MedicalHistory>.Failure(ex.Message);
+                }
             }
         }
     }
