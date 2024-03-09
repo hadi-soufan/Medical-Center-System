@@ -42,7 +42,5 @@ namespace API.Controllers
         {
             return HandleResult(await Mediator.Send(new DoctorDelete.Command { DoctorId = id }));
         }
-
-
     }
 }
