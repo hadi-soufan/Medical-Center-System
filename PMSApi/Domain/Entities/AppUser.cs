@@ -58,6 +58,13 @@ namespace Domain.Entities
         //public ICollection<Appointment> Appointments { get; set; }
 
         public ICollection<Patient> Patients { get; set; } = new List<Patient>();
+        public ICollection<Receptionist> Receptionists{ get; set; } = new List<Receptionist>();
+        public ICollection<Staff> Staffs { get; set; } = new List<Staff>();
+        public ICollection<Nurse> Nurses { get; set; } = new List<Nurse>();
+        public ICollection<Accountant> Accountants { get; set; } = new List<Accountant>();
+
+
+
 
     }
 }
