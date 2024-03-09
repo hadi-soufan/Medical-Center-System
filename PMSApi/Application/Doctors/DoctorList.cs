@@ -1,58 +1,52 @@
 ﻿using Application.Core;
-using Application.Patients;
+using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Doctors
 {
+    /// <summary>
+    /// Provides functionality to retrieve a list of doctors.
+    /// </summary>
     public class DoctorList
     {
+        /// <summary>
+        /// Query to retrieve a list of doctors.
+        /// </summary>
         public class Query : IRequest<Result<List<DoctorDto>>> { }
 
-        public class Handler : IRequestHandler<Query, Result<List<DoctorDto>>>
+        /// <summary>
+        /// Handler to process the DoctorList query.
+        /// </summary>
+        public class Handler(ApplicationDbContext context, IMapper mapper) : IRequestHandler<Query, Result<List<DoctorDto>>>
         {
-            private readonly ApplicationDbContext _context;
-
-            public Handler(ApplicationDbContext context)
-            {
-                _context = context;
-            }
-
+            /// <summary>
+            /// Handles the DoctorList query.
+            /// </summary>
+            /// <param name="request">The query request.</param>
+            /// <param name="cancellationToken">The cancellation token.</param>
+            /// <returns>A result containing the list of doctors.</returns>
             public async Task<Result<List<DoctorDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var doctors = await _context.Doctors
+                try
+                {
+                    var doctors = await context.Doctors
                     .Include(d => d.User)
-                    .Select(d => new DoctorDto
-                    {
-                        DoctorId = d.DoctorId,
-                        DisplayName = d.User.DisplayName,
-                        Username = d.User.UserName,
-                        FatherName = d.User.FatherName,
-                        MotherName = d.User.MotherName,
-                        Nationality = d.User.Nationality,
-                        Education = d.User.Education,
-                        MaritalStatus = d.User.MaritalStatus,
-                        City = d.User.City,
-                        State = d.User.State,
-                        Email = d.User.Email,
-                        PhoneNumber = d.User.PhoneNumber,
-                        DateOfBirth = d.User.DateOfBirth,
-                        Gender = d.User.Gender,
-                        BloodType = d.User.BloodType,
-                        Address = d.User.Address,
-                        Occupation = d.User.Occupation,
-                        InsuranceId = d.User.InsuranceId,
-                        DoctorLicenseId = d.DoctorLicenseId
-                    })
-                    .ToListAsync();
+                    .Include(d => d.Appointments)
+                    .Where(d => !d.IsDeleted)
+                    .ToListAsync(cancellationToken);
 
-                return Result<List<DoctorDto>>.Success(doctors);
+                    if (doctors.Count is 0) return Result<List<DoctorDto>>.Failure("No Doctors data");
+
+                    var doctorDtos = mapper.Map<List<DoctorDto>>(doctors);
+
+                    return Result<List<DoctorDto>>.Success(doctorDtos);
+                }
+                catch (Exception ex)
+                {
+                    return Result<List<DoctorDto>>.Failure(ex.Message);
+                }
             }
         }
 
