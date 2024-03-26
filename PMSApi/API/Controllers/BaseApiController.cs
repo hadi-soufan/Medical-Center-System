@@ -1,12 +1,14 @@
 ﻿using MediatR;
 using Application.Core;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 /// <summary>
 /// Represents a base API controller providing access to the mediator for handling requests.
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
+[AllowAnonymous]
 public class BaseApiController : ControllerBase
 {
     private IMediator _mediator;
