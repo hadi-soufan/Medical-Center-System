@@ -3,6 +3,17 @@ import DoctorRow from "./DoctorRow";
 import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
 
+/**
+ * Renders a table of doctors.
+ *
+ * @param {Object} props - The component props.
+ * @param {Array} props.doctors - The array of doctors to display in the table.
+ * @param {Function} props.handleDeleteDoctor - The function to handle deleting a doctor.
+ * @param {Function} props.handleUpdate - The function to handle updating a doctor.
+ * @param {boolean} props.isDeleting - Indicates whether a doctor is currently being deleted.
+ * @param {Function} props.setIsDeleting - The function to set the isDeleting state.
+ * @returns {JSX.Element} The rendered DoctorTable component.
+ */
 function DoctorTable({
   doctors,
   handleDeleteDoctor,
@@ -10,6 +21,7 @@ function DoctorTable({
   isDeleting,
   setIsDeleting,
 }) {
+
   return (
     <Menus>
       <Table columns="repeat(6, 1fr)">
@@ -23,18 +35,21 @@ function DoctorTable({
         </Table.Header>
 
         <Table.Body
-          data={doctors}
+          data={doctors.$values}
           render={(doctor) => (
-            <DoctorRow
-              key={doctor.doctorId}
-              doctor={doctor}
-              handleDeleteDoctor={handleDeleteDoctor}
-              handleUpdate={handleUpdate}
-              isDeleting={isDeleting}
-              setIsDeleting={setIsDeleting}
-            />
+            doctor && (
+              <DoctorRow
+                key={doctor.doctorId}
+                doctor={doctor}
+                handleDeleteDoctor={handleDeleteDoctor}
+                handleUpdate={handleUpdate}
+                isDeleting={isDeleting}
+                setIsDeleting={setIsDeleting}
+              />
+            )
           )}
         />
+        
       </Table>
     </Menus>
   );

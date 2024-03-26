@@ -1,58 +1,33 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Heading from "../ui/Heading";
 import Row from "../ui/Row";
 import DoctorTable from "../features/doctor/DoctorTable";
-import axios from "axios";
-import toast from "react-hot-toast";
+import { useSelector, useDispatch } from "react-redux";
 import Spinner from "../ui/Spinner";
 import DoctorTableOperations from "../features/doctor/DoctorTableOperations";
+import {
+  fetchDoctors,
+  updateDoctor,
+  deleteDoctor,
+} from "../api/stores/doctorStore";
 
+/**
+ * Renders the Doctors page component.
+ * 
+ * @returns {JSX.Element} The Doctors page component.
+ */
 function Doctors() {
-  const [doctors, setDoctors] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isDeleting, setIsDeleting] = useState(false);
+ 
+  const dispatch = useDispatch();
+  const doctors = useSelector(state => state.doctors); 
+  const isLoading = useSelector(state => state.isLoading); 
+
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/doctor/all-doctors")
-      .then((response) => {
-        setDoctors(response.data.$values);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.log("Error fetching doctors data: ", error);
-      });
-  }, []);
+    dispatch(fetchDoctors());
+  }, [dispatch]);
 
-  async function handleUpdate(updatedData) {
-    try {
-      const response = await axios.put(
-        `http://localhost:5000/api/doctor/${updatedData.doctorId}`,
-        updatedData
-      );
-      if (response.status === 200) {
-        toast.success("Doctor updated successfully");
-      }
-    } catch (error) {
-      console.error("Update failed:", error);
-      toast.error("Failed to update doctor");
-
-    }
-  }
-
-  async function handleDeleteDoctor(id) {
-     await axios
-      .delete(`http://localhost:5000/api/doctor/${id}`)
-      .then(() => {
-        setDoctors([...doctors.filter((x) => x.id !== id)]);
-        setIsDeleting(true);
-        toast.success("Doctor deleted successfully");
-      })
-      .catch((error) => {
-        console.log("Error deleting Doctor", error);
-        toast.error("Failed to delete doctor");
-      });
-  }
+  
 
   if (isLoading) return <Spinner />;
 
@@ -65,11 +40,13 @@ function Doctors() {
 
       <Row>
         <DoctorTable
-          handleDeleteDoctor={handleDeleteDoctor}
+          handleDeleteDoctor={(id) => dispatch(deleteDoctor(id))}
           doctors={doctors}
-          handleUpdate={handleUpdate}
-          isDeleting={isDeleting}
-          setIsDeleting={setIsDeleting}
+          handleUpdate={(doctor) => {
+          dispatch(updateDoctor(doctor));
+          }}
+          isDeleting={isLoading}
+          setIsDeleting={() => {}}
         />
       </Row>
     </>
