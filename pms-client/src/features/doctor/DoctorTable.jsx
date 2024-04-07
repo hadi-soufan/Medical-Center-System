@@ -20,7 +20,9 @@ function DoctorTable({
   handleUpdate,
   isDeleting,
   setIsDeleting,
+  getDoctorDetails
 }) {
+
 
   return (
     <Menus>
@@ -35,7 +37,7 @@ function DoctorTable({
         </Table.Header>
 
         <Table.Body
-          data={doctors.$values}
+          data={doctors}
           render={(doctor) => (
             doctor && (
               <DoctorRow
@@ -45,6 +47,7 @@ function DoctorTable({
                 handleUpdate={handleUpdate}
                 isDeleting={isDeleting}
                 setIsDeleting={setIsDeleting}
+                getDoctorDetails={getDoctorDetails}
               />
             )
           )}

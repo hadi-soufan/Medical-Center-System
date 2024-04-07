@@ -73,9 +73,16 @@ function MainNav() {
         </li>
 
         <li>
-          <StyledNavLink to="/users">
+          <StyledNavLink to="/patients">
             <HiOutlineUsers />
             <span>Patients</span>
+          </StyledNavLink>
+        </li>
+
+        <li>
+          <StyledNavLink to="/users">
+            <HiOutlineUsers />
+            <span>Users</span>
           </StyledNavLink>
         </li>
 

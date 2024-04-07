@@ -7,6 +7,9 @@ import PageNotFound from "./pages/PageNotFound";
 import Appointments from "./pages/Appointments";
 import Doctors from "./pages/Doctors";
 import { Toaster } from "react-hot-toast";
+import Patients from "./pages/Patients";
+import Users from "./pages/Users";
+import ProtectedRoute from "./ui/ProtectedRoute";
 
 function App() {
   return (
@@ -14,11 +17,19 @@ function App() {
       <GlobalStyles />
       <BrowserRouter>
         <Routes>
-          <Route element={<AppLayout />}>
+          <Route
+            element={
+              <ProtectedRoute>
+                <AppLayout />
+              </ProtectedRoute>
+            }
+          >
             <Route index element={<Navigate replace to="dashboard" />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="appointments" element={<Appointments />} />
             <Route path="doctors" element={<Doctors />} />
+            <Route path="patients" element={<Patients />} />
+            <Route path="users" element={<Users />} />
           </Route>
 
           <Route path="login" element={<Login />} />

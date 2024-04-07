@@ -9,7 +9,9 @@ import {
   fetchDoctors,
   updateDoctor,
   deleteDoctor,
+  getDoctorDetails
 } from "../api/stores/doctorStore";
+import {connect} from 'react-redux';
 
 /**
  * Renders the Doctors page component.
@@ -19,13 +21,15 @@ import {
 function Doctors() {
  
   const dispatch = useDispatch();
-  const doctors = useSelector(state => state.doctors); 
-  const isLoading = useSelector(state => state.isLoading); 
+  const doctors = useSelector(state => state.doctors.doctors);
+  const isLoading = useSelector(state => state.doctors.isLoading);
+
 
 
   useEffect(() => {
     dispatch(fetchDoctors());
   }, [dispatch]);
+
 
   
 
@@ -42,6 +46,7 @@ function Doctors() {
         <DoctorTable
           handleDeleteDoctor={(id) => dispatch(deleteDoctor(id))}
           doctors={doctors}
+          getDoctorDetails={getDoctorDetails}
           handleUpdate={(doctor) => {
           dispatch(updateDoctor(doctor));
           }}
@@ -53,4 +58,10 @@ function Doctors() {
   );
 }
 
-export default Doctors;
+const mapStateToProps = (state) => ({
+  doctors: state.doctors.doctors,
+  isLoading: state.doctors.isLoading,
+});
+
+
+export default connect(mapStateToProps)(Doctors);

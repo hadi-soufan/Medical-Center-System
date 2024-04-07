@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import UpdateDoctor from "./UpdateDoctor";
 import Button from "../../ui/Button";
@@ -6,6 +6,8 @@ import { HiTrash, HiEye } from "react-icons/hi2";
 import Modal from "../../ui/Modal";
 import ConfirmDelete from "../../ui/ConfirmDelete";
 import Table from "../../ui/Table";
+import { useDispatch, useSelector } from "react-redux";
+import DoctorDetails from "./DoctorDetails";
 
 const Doctor = styled.div`
   font-size: 1.6rem;
@@ -28,10 +30,19 @@ function DoctorRow({
   doctor,
   handleDeleteDoctor,
   handleUpdate,
-  isDeleting
+  isDeleting,
+  getDoctorDetails,
 }) {
+
+  const dispatch = useDispatch();
+  const doctorDetails = useSelector(state => state.doctor); 
+
+  useEffect(() => {
+    dispatch(getDoctorDetails(doctor.doctorId));
+  }, [dispatch, getDoctorDetails, doctor.doctorId]);
+
+
   return (
-    <>
       <Table.Row role="row">
         <Doctor>{doctor.displayName}</Doctor>
         <Doctor>{doctor.email}</Doctor>
@@ -40,9 +51,20 @@ function DoctorRow({
         <Doctor>{doctor.appointmentCount}</Doctor>
         <div>
           <Modal>
-            <Button>
+          <Modal.Open opens='doctor-details'>
+          <Button
+              onClick={async () => {
+                const doctorDetails = await getDoctorDetails(doctor.doctorId);
+                console.log('doctorDetails', doctorDetails);  
+              }}
+            >
               <HiEye />
             </Button>
+          </Modal.Open>
+          <Modal.Window name='doctor-details'>
+            <DoctorDetails doctorDetails={doctorDetails} />
+          </Modal.Window>
+            
 
             <UpdateDoctor doctorData={doctor} handleUpdate={handleUpdate} />
 
@@ -53,7 +75,7 @@ function DoctorRow({
             </Modal.Open>
             <Modal.Window name="delete-doctor">
               <ConfirmDelete
-                resourceName={doctor}
+                resourceName={doctor.displayName}
                 disabled={isDeleting}
                 onConfirm={() => {
                   handleDeleteDoctor(doctor.doctorId);
@@ -61,13 +83,8 @@ function DoctorRow({
               />
             </Modal.Window>
           </Modal>
-
-          
-
-
         </div>
       </Table.Row>
-    </>
   );
 }
 
