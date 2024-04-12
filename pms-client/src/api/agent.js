@@ -116,10 +116,20 @@ const Account = {
   current: () => requests.get("/account"),
 };
 
+const Appointments = {
+  list: () => requests.get("/appointments/all-appointments"),
+  get: (id) => requests.get(`/appointments/${id}`),
+  create: (data) => requests.post('/appointments/create-new-appointment', data),
+  update: (id, data) => requests.put(`/appointments/${id}`, data),
+  delete: (id) => axios.delete(`/appointments/${id}`),
+};
+
+
 const agent = {
   Doctors,
   Patients,
   Account,
+  Appointments,
 };
 
 export default agent;
