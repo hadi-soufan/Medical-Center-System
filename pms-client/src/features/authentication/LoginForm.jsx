@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector  } from "react-redux"; 
-import { loginAction } from "../../api/stores/userStore"; 
+import { loginAction } from "../../api/stores/user/userStore"; 
 import Button from "../../ui/Button";
 import Form from "../../ui/Form";
 import Input from "../../ui/Input";

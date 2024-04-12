@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { registerUser } from "../../api/stores/userStore";
+import { registerUser } from "../../api/stores/user/userStore";
 import Button from "../../ui/Button";
 import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
-
-// Email regex: /\S+@\S+\.\S+/
 
 function SignupForm() {
   const [email, setEmail] = useState("");
@@ -56,6 +54,7 @@ function SignupForm() {
         occupation,
         insuranceId,
         role,
+        doctorLicenseId
       })
     );
   };
@@ -260,7 +259,7 @@ function SignupForm() {
 
       {role === "Doctor" && (
         <>
-          <FormRow label="Doctor Field 1" error={""}>
+          <FormRow label="Doctor License Id" error={""}>
             <Input
               id="doctorField1"
               value={doctorLicenseId}
