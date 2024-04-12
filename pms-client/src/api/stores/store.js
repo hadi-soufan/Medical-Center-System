@@ -1,14 +1,16 @@
-import { createStore, applyMiddleware } from 'redux';
-import {thunk}  from 'redux-thunk';
-import { combineReducers } from 'redux';
-import { doctorsReducer } from './doctorStore';
-import { usersReducer } from './userStore';
-import patientReducer from './patientStore';
+import { createStore, applyMiddleware } from "redux";
+import { thunk } from "redux-thunk";
+import { combineReducers } from "redux";
+import doctorsReducer from "./doctor/doctorsReducer";
+import usersReducer  from "./user/usersReducer";
+import appointmentReducer  from './appointment/appointmentReducer';
+import patientReducer from "./patient/patientReducer";
 
 const rootReducer = combineReducers({
   doctors: doctorsReducer,
   patients: patientReducer,
   users: usersReducer,
+  appointments: appointmentReducer,
 });
 
 /**
