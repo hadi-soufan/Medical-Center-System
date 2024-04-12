@@ -4,7 +4,7 @@ import GlobalStyles from "./styles/GLobalStyles";
 import AppLayout from "./ui/AppLayout";
 import Login from "./pages/Login";
 import PageNotFound from "./pages/PageNotFound";
-import Appointments from "./pages/Appointments";
+import PatientAppointments from "./pages/PatientAppointments";
 import Doctors from "./pages/Doctors";
 import { Toaster } from "react-hot-toast";
 import Patients from "./pages/Patients";
@@ -26,7 +26,7 @@ function App() {
           >
             <Route index element={<Navigate replace to="dashboard" />} />
             <Route path="dashboard" element={<Dashboard />} />
-            <Route path="appointments" element={<Appointments />} />
+            <Route path="appointments" element={<PatientAppointments />} />
             <Route path="doctors" element={<Doctors />} />
             <Route path="patients" element={<Patients />} />
             <Route path="users" element={<Users />} />
@@ -35,7 +35,6 @@ function App() {
           <Route path="login" element={<Login />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
-
         <Toaster
           postion="top-center"
           gutter={12}
