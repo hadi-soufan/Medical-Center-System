@@ -5,8 +5,6 @@ import Button from '../../ui/Button'
 import DetailsDoctorForm from './DetailsDoctorForm'
 
 function DoctorDetails({doctorDetails}) {
-
-    console.log('doctorDetails component', doctorDetails);
   return (
     <Modal>
       <Modal.Open opens='doctor-details-form'>

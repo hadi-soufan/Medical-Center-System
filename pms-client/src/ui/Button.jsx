@@ -19,6 +19,12 @@ const sizes = {
     padding: 1.2rem 2.4rem;
     font-weight: 500;
   `,
+  create: css`
+    font-size: 1.4rem;
+    padding: 1.2rem 1.6rem;
+    font-weight: 500;
+    width: 20%;
+  `,
 };
 
 const variations = {
@@ -63,7 +69,7 @@ const Button = styled.button`
 
 Button.propTypes = {
   variation: PropTypes.oneOf(['primary', 'secondary', 'danger']),
-  size: PropTypes.oneOf(['small', 'medium', 'large']), // Define prop types for size
+  size: PropTypes.oneOf(['small', 'medium', 'large', 'create']),
 };
 
 Button.defaultProps = {

@@ -37,8 +37,6 @@ const Label = styled.label`
 function DetailsDoctorForm({ doctorData, onCloseModal }) {
   const [formData] = useState(doctorData);
 
-  console.log('formData', formData);
-
   return (
     <Form type={onCloseModal ? "modal" : "regular"}>
       <FormRow>
