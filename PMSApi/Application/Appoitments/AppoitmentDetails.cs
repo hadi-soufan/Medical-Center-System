@@ -39,7 +39,8 @@ namespace Application.Appointments
                     .Select(a => new AppointmentDto
                     {
                         AppointmentId = a.AppointmentId,
-                        AppointmentDate = a.AppointmentDate,
+                        AppointmentDateStart = a.AppointmentDateStart,
+                        AppointmentDateEnd = a.AppointmentDateEnd,
                         AppointmentStatus = a.AppointmentStatus,
                         AppointmentType = a.AppointmentType,
                         Notes = a.Notes,

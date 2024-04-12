@@ -11,7 +11,8 @@ namespace Application.Appoitments
         public AppointmentValidator() 
         { 
             RuleFor(x => x.AppointmentStatus).NotEmpty();
-            RuleFor(x => x.AppointmentDate).NotEmpty();
+            RuleFor(x => x.AppointmentDateStart).NotEmpty();
+            RuleFor(x => x.AppointmentDateEnd).NotEmpty();
             RuleFor(x => x.AppointmentStatus).NotEmpty();
             RuleFor(x => x.AppointmentType).NotEmpty();
         }

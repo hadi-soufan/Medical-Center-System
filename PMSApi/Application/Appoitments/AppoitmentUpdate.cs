@@ -38,7 +38,8 @@ namespace Application.Appointments
 
                     if (appointment is null) return Result<Unit>.Failure("Appointment not found");
 
-                    appointment.AppointmentDate = request.Appointment.AppointmentDate;
+                    appointment.AppointmentDateStart = request.Appointment.AppointmentDateStart;
+                    appointment.AppointmentDateEnd = request.Appointment.AppointmentDateEnd;
                     appointment.AppointmentStatus = request.Appointment.AppointmentStatus;
                     appointment.AppointmentType = request.Appointment.AppointmentType;
                     appointment.Notes = request.Appointment.Notes;

@@ -11,8 +11,11 @@ namespace Domain.Entities
         [Display(Name = "Appointment Id")]
         public Guid AppointmentId { get; set; }
 
-        [Display(Name = "Appointment Date")]
-        public DateTime AppointmentDate { get; set; }
+        [Display(Name = "Appointment Date Start")]
+        public DateTime AppointmentDateStart { get; set; }
+
+        [Display(Name = "Appointment Date End")]
+        public DateTime AppointmentDateEnd { get; set; }
 
         [Display(Name = "Appointment Status")]
         [StringLength(20)]

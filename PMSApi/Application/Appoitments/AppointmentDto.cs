@@ -6,7 +6,8 @@
     public class AppointmentDto
     {
         public Guid AppointmentId { get; set; }
-        public DateTime AppointmentDate { get; set; }
+        public DateTime AppointmentDateStart { get; set; }
+        public DateTime AppointmentDateEnd { get; set; }
         public string AppointmentStatus { get; set; }
         public string AppointmentType { get; set; }
         public string Notes { get; set; }

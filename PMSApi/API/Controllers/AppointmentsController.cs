@@ -1,5 +1,6 @@
 ﻿using Application.Appointments;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Persistence;
 
@@ -18,7 +19,7 @@ namespace API.Controllers
         }
 
         /// <inheritdoc />
-        // GET: /api/appointments/all-appointments
+        // GET: /api/appointments/all-appointments  
         [HttpGet("all-appointments")]
         public async Task<IActionResult> GetAppoitments()
         {
