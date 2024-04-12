@@ -10,7 +10,7 @@ import {
   updateDoctor,
   deleteDoctor,
   getDoctorDetails
-} from "../api/stores/doctorStore";
+} from "../api/stores/doctor/doctorStore";
 import {connect} from 'react-redux';
 
 /**

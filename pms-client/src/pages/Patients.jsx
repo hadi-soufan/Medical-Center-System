@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import {
   fetchPatients
-} from "../api/stores/patientStore";
+} from "../api/stores/patient/patientStore";
 import { useSelector } from "react-redux";
 import Spinner from "../ui/Spinner";
 import Row from "../ui/Row";
