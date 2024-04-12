@@ -1,0 +1,5 @@
+export const SET_DOCTORS = "SET_DOCTORS";
+export const SET_LOADING = "SET_LOADING";
+export const UPDATE_DOCTOR = "UPDATE_DOCTOR";
+export const DELETE_DOCTOR = "DELETE_DOCTOR";
+export const GET_DOCTOR_DETAILS = "GET_DOCTOR_DETAILS";
