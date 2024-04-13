@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import Image from '../../assets/img/maxresdefault.jpg'
 
 const StyledUserAvatar = styled.div`
   display: flex;
@@ -19,3 +20,21 @@ const Avatar = styled.img`
   border-radius: 50%;
   outline: 2px solid var(--color-grey-100);
 `;
+
+function UserAvatar() {
+  // const { user } = useUser();
+
+  // const { fullName, avatar } = user.user_metadata;
+
+  return (
+    <StyledUserAvatar>
+      <Avatar
+        src={Image}
+        alt= 'User Image'
+      />
+      <span>Hadi Soufan</span>
+    </StyledUserAvatar>
+  );
+}
+
+export default UserAvatar;

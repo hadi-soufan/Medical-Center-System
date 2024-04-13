@@ -9,7 +9,9 @@ function PatientTable({patients}) {
     <Table columns="repeat(6, 1fr)">
       <Table.Header>
         <div>Name</div>
-        <div>Email</div>
+        <div>Date Check In</div>
+        <div>Doctor Assgined</div>
+        <div>Disease</div>
         <div>Phone</div>
         <div>Actions</div>
       </Table.Header>

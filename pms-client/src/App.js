@@ -10,6 +10,7 @@ import { Toaster } from "react-hot-toast";
 import Patients from "./pages/Patients";
 import Users from "./pages/Users";
 import ProtectedRoute from "./ui/ProtectedRoute";
+import Account from "./pages/Account";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
             <Route path="doctors" element={<Doctors />} />
             <Route path="patients" element={<Patients />} />
             <Route path="users" element={<Users />} />
+            <Route path="account" element={<Account />} />
           </Route>
 
           <Route path="login" element={<Login />} />

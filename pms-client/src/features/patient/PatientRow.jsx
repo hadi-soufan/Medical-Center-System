@@ -13,7 +13,9 @@ function PatientRow({patient}) {
   return (
     <Table.Row role="row">
         <Patient>{patient.displayName}</Patient>
-        <Patient>{patient.email}</Patient>
+        <Patient>{patient.createdAt.split('T')[0]}</Patient>
+        <Patient></Patient>
+        <Patient></Patient>
         <Patient>{patient.phoneNumber}</Patient>
         <Patient>{patient.PatientLicenseId}</Patient>
         <Patient>{patient.appointmentCount}</Patient>
