@@ -1,5 +1,8 @@
 ﻿using Application.Core;
+using Application.Interfaces;
 using MediatR;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application.Appointments
@@ -21,28 +24,32 @@ namespace Application.Appointments
         /// <summary>
         /// Handler to process the AppointmentDelete command.
         /// </summary>
-        public class Handler(ApplicationDbContext context) : IRequestHandler<Command, Result<Unit>>
+        public class Handler : IRequestHandler<Command, Result<Unit>>
         {
+            private readonly ApplicationDbContext _context;
+            private readonly IAppointmentUpdateSender _appointmentDeleteSender;
 
-            /// <summary>
-            /// Handles the AppointmentDelete command.
-            /// </summary>
-            /// <param name="request">The delete command.</param>
-            /// <param name="cancellationToken">The cancellation token.</param>
-            /// <returns>A result indicating success or failure of the delete operation.</returns>
+            public Handler(ApplicationDbContext context, IAppointmentUpdateSender appointmentDeleteSender)
+            {
+                _context = context;
+                _appointmentDeleteSender = appointmentDeleteSender;
+            }
+
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 try
                 {
-                    var appointment = await context.Appointments.FindAsync(new object[] { request.Id }, cancellationToken: cancellationToken);
+                    var appointment = await _context.Appointments.FindAsync(new object[] { request.Id }, cancellationToken: cancellationToken);
 
                     if (appointment is null) return null;
 
                     appointment.IsCancelled = true;
 
-                    var result = await context.SaveChangesAsync(cancellationToken) > 0;
+                    var result = await _context.SaveChangesAsync(cancellationToken) > 0;
 
                     if (!result) return Result<Unit>.Failure("Failed to Delete the Appointment");
+
+                    await _appointmentDeleteSender.NotifyAppointmentDeletion("AppointmentDeleted", request.Id);
 
                     return Result<Unit>.Success(Unit.Value);
                 }
@@ -51,6 +58,10 @@ namespace Application.Appointments
                     return Result<Unit>.Failure(ex.Message);
                 }
             }
+
         }
+
+          
+            
     }
 }

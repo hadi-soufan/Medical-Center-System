@@ -7,6 +7,7 @@ import AppointmentsScheduler from "../features/appointments/AppointmentsSchedule
 import Button from "../ui/Button";
 import Modal from "../ui/Modal";
 import CreateAppointmentForm from "../features/appointments/CreateAppointmentForm";
+import { registerAppointmentUpdates, connection } from "../api/services/signalRService";
 
 function PatientAppointments() {
   const dispatch = useDispatch();
@@ -16,6 +17,19 @@ function PatientAppointments() {
 
   useEffect(() => {
     dispatch(getAllAppointments());
+
+    const updateAppointmentsList = message => {
+      console.log("Update received:", message);
+      dispatch(getAllAppointments());
+    };
+
+    registerAppointmentUpdates(updateAppointmentsList);
+
+    return () => {
+      connection.off("ReceiveMessage", updateAppointmentsList);
+      connection.off("AppointmentUpdated");
+      connection.off("AppointmentDeleted");
+    };
   }, [dispatch]);
 
   return (

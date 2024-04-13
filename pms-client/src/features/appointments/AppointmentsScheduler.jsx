@@ -12,22 +12,27 @@ function AppointmentsScheduler({ appointments }) {
   const currentDate = new Date();
 
   const dataSource =
-    appointments?.map((appointment) => ({
-      text: appointment?.appointmentType,
-      startDate: appointment?.appointmentDate
-        ? new Date(appointment.appointmentDate)
-        : new Date(),
-      endDate: new Date(
-        new Date(appointment?.appointmentDate).getTime() + 30 * 60000
-      ),
+  appointments?.map((appointment) => {
+    if (!appointment) {
+      return null;
+    }
 
+    return {
+      text: appointment?.appointmentType,
+      startDate: appointment.appointmentDateStart ? new Date(new Date(appointment.appointmentDateStart).setHours(new Date(appointment.appointmentDateStart).getHours() + 3))
+      : new Date(),
+      endDate: appointment.appointmentDateEnd ? new Date(new Date(appointment.appointmentDateEnd).setHours(new Date(appointment.appointmentDateEnd).getHours() + 3))
+      : new Date(),
       appointmentType: appointment?.appointmentType,
       id: appointment?.appointmentId,
       description: appointment?.notes,
       patientName: appointment?.patientUsername,
       doctorName: appointment?.doctorUsername,
       status: appointment?.appointmentStatus,
-    })) || [];
+    };
+    }).filter(Boolean) || [];
+
+    
 
   const onAppointmentFormOpening = (e) => {
     const { form } = e;

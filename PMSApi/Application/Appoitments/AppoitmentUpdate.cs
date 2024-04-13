@@ -1,4 +1,5 @@
 ﻿using Application.Core;
+using Application.Interfaces;
 using Domain.Entities;
 using MediatR;
 using Persistence;
@@ -22,8 +23,17 @@ namespace Application.Appointments
         /// <summary>
         /// Handler to process the AppointmentUpdate command.
         /// </summary>
-        public class Handler(ApplicationDbContext context) : IRequestHandler<Command, Result<Unit>>
+        public class Handler : IRequestHandler<Command, Result<Unit>>
         {
+            private readonly ApplicationDbContext _context;
+            private readonly IAppointmentUpdateSender _appointmentUpdateSender;
+
+            public Handler(ApplicationDbContext context, IAppointmentUpdateSender appointmentUpdateSender)
+            {
+                _context = context;
+                _appointmentUpdateSender = appointmentUpdateSender;
+            }
+
             /// <summary>
             /// Handles the AppointmentUpdate command.
             /// </summary>
@@ -34,7 +44,7 @@ namespace Application.Appointments
             {
                 try
                 {
-                    var appointment = await context.Appointments.FindAsync(new object[] { request.Id }, cancellationToken);
+                    var appointment = await _context.Appointments.FindAsync(new object[] { request.Id }, cancellationToken);
 
                     if (appointment is null) return Result<Unit>.Failure("Appointment not found");
 
@@ -44,11 +54,13 @@ namespace Application.Appointments
                     appointment.AppointmentType = request.Appointment.AppointmentType;
                     appointment.Notes = request.Appointment.Notes;
 
-                    appointment.UpdatedAt = DateOnly.FromDateTime(DateTime.UtcNow);
+                    appointment.UpdatedAt = DateOnly.FromDateTime(DateTime.Now);
 
-                    var result = await context.SaveChangesAsync(cancellationToken) > 0;
+                    var result = await _context.SaveChangesAsync(cancellationToken) > 0;
 
                     if (!result) return Result<Unit>.Failure("Failed to update appointment");
+
+                    await _appointmentUpdateSender.NotifyAppointmentUpdated("New appointment created", appointment);
 
                     return Result<Unit>.Success(Unit.Value);
                 }

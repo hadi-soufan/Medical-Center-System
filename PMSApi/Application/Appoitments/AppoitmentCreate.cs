@@ -1,8 +1,10 @@
 ﻿using Application.Appoitments;
 using Application.Core;
+using Application.Interfaces;
 using Domain.Entities;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -37,19 +39,22 @@ namespace Application.Appointments
         /// <summary>
         /// Handler to process the AppointmentCreate command.
         /// </summary>
-        public class Handler(ApplicationDbContext context) : IRequestHandler<Command, Result<Unit>>
+        public class Handler : IRequestHandler<Command, Result<Unit>>
         {
-            /// <summary>
-            /// Handles the AppointmentCreate command.
-            /// </summary>
-            /// <param name="request">The create command.</param>
-            /// <param name="cancellationToken">The cancellation token.</param>
-            /// <returns>A result indicating success or failure of the create operation.</returns>
+            private readonly ApplicationDbContext _context;
+            private readonly IAppointmentUpdateSender _appointmentUpdateSender;
+
+            public Handler(ApplicationDbContext context, IAppointmentUpdateSender appointmentUpdateSender)
+            {
+                _context = context;
+                _appointmentUpdateSender = appointmentUpdateSender;
+            }
+
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 try
                 {
-                    var user = await context.Users
+                    var user = await _context.Users
                         .Include(u => u.Patients)
                         .Where(u => !u.IsCancelled)
                         .SingleOrDefaultAsync(u => u.UserName == request.PatientUsername, cancellationToken);
@@ -57,11 +62,10 @@ namespace Application.Appointments
                     if (user is null) return Result<Unit>.Failure("User not found");
 
                     var patient = user.Patients.FirstOrDefault();
-
                     if (patient is null) return Result<Unit>.Failure("Patient not found");
 
-                    var doctor = await context.Doctors
-                        .Include(d => d.User) 
+                    var doctor = await _context.Doctors
+                        .Include(d => d.User)
                         .FirstOrDefaultAsync(d => d.User.UserName == request.DoctorUsername, cancellationToken);
 
                     if (doctor is null) return Result<Unit>.Failure("Doctor not found");
@@ -69,11 +73,12 @@ namespace Application.Appointments
                     request.Appointment.PatientId = patient.PatientId;
                     request.Appointment.DoctorId = doctor.DoctorId;
 
-                    context.Appointments.Add(request.Appointment);
-                    var result = await context.SaveChangesAsync(cancellationToken) > 0;
+                    _context.Appointments.Add(request.Appointment);
+                    var result = await _context.SaveChangesAsync(cancellationToken) > 0;
 
                     if (!result) return Result<Unit>.Failure("Failed to create new appointment");
 
+                    await _appointmentUpdateSender.SendAppointmentUpdate("New appointment created");
 
                     return Result<Unit>.Success(Unit.Value);
                 }

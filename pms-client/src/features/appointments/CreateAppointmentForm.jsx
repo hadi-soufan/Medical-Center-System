@@ -7,13 +7,19 @@ import { v4 as uuidv4 } from "uuid";
 import SpinnerMini from '../../ui/SpinnerMini';
 
 function CreateAppointmentForm({ onCreateAppointment, isLoading, error }) {
+  
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
+    const appointmentDateStart = new Date(formData.get("appointmentDateStart"));
+    const appointmentDateEnd = new Date(appointmentDateStart);
+    appointmentDateEnd.setMinutes(appointmentDateStart.getMinutes() + 30);
     const appointmentData = {
       Appointment: {
         id: uuidv4(),
-        appointmentDate: formData.get("appointmentDate"),
+        appointmentDateStart: appointmentDateStart.toISOString(),
+        appointmentDateEnd: appointmentDateEnd.toISOString(),
         appointmentStatus: "Pending",
         appointmentType: formData.get("appointmentType"),
         notes: formData.get("notes"),
@@ -27,6 +33,7 @@ function CreateAppointmentForm({ onCreateAppointment, isLoading, error }) {
     onCreateAppointment(appointmentData);
 
   };
+
   return (
     <>
       <Form onSubmit={handleSubmit}>
@@ -35,7 +42,7 @@ function CreateAppointmentForm({ onCreateAppointment, isLoading, error }) {
         </FormRow>
 
         <FormRow label="Appointment Date" error={""}>
-          <Input type="datetime-local" name="appointmentDate" required />
+          <Input type="datetime-local" name="appointmentDateStart" required />
         </FormRow>
 
         <FormRow label="Notes" error={""}>
@@ -58,7 +65,6 @@ function CreateAppointmentForm({ onCreateAppointment, isLoading, error }) {
           {isLoading ? <SpinnerMini size="small" /> : "Create new Appointment"}
         </Button>
         </FormRow>
-        {error && <div className="error-message">{error}</div>} 
       </Form>
     </>
   );

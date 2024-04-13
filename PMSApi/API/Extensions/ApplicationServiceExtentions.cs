@@ -1,13 +1,11 @@
 ﻿using MediatR;
 using Persistence;
 using Microsoft.EntityFrameworkCore;
-using Application.Appoitments;
 using FluentValidation.AspNetCore;
 using FluentValidation;
-using Application.Interfaces;
-using Infrastructure.Security;
-using Application.Patients;
 using Application.Appointments;
+using API.Services;
+using Application.Interfaces;
 
 namespace API.Extensions
 {
@@ -45,6 +43,9 @@ namespace API.Extensions
             services.AddFluentValidationAutoValidation();
             services.AddValidatorsFromAssemblyContaining<AppointmentCreate>();
             services.AddHttpContextAccessor();
+            services.AddSignalR();
+
+            services.AddScoped<IAppointmentUpdateSender, AppointmentUpdateSender>();
 
             return services;
         }

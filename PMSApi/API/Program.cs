@@ -1,15 +1,12 @@
 using API.Extensions;
+using API.Hubs;
 using API.Middleware;
-using Application.Appoitments;
-
-using Application.MedicalHistories;
+using API.Services;
 using Domain.Entities;
 using DotNetEnv;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using System.Text.Json.Serialization;
@@ -42,6 +39,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 app.UseMiddleware<ExceptionMiddleware>();
 
+
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -55,6 +54,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<AppointmentHub>("/appointmenthub");
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
