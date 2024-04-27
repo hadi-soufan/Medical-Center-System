@@ -5,12 +5,14 @@ import doctorsReducer from "./doctor/doctorsReducer";
 import usersReducer  from "./user/usersReducer";
 import appointmentReducer  from './appointment/appointmentReducer';
 import patientReducer from "./patient/patientReducer";
+import medicalHistoryReducer from "./medicalHistory/medicalHistoryReducer";
 
 const rootReducer = combineReducers({
   doctors: doctorsReducer,
   patients: patientReducer,
   users: usersReducer,
   appointments: appointmentReducer,
+  medicalHistories: medicalHistoryReducer,
 });
 
 /**
