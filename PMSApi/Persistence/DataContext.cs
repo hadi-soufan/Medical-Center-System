@@ -7,7 +7,7 @@ namespace Persistence
     /// <summary>
     /// Represents the database context for interacting with the underlying database.
     /// </summary>
-    public class ApplicationDbContext : IdentityDbContext<AppUser>
+    public class ApplicationDbContext : IdentityDbContext<AppUser>, IApplicationDbContext
     {
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<MedicalHistory> MedicalHistories { get; set; }
