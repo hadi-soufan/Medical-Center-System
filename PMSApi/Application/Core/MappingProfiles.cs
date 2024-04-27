@@ -143,7 +143,8 @@ public class MappingProfiles : Profile
                 .ForMember(dest => dest.BloodType, opt => opt.MapFrom(src => src.User.BloodType))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.User.Address))
                 .ForMember(dest => dest.Occupation, opt => opt.MapFrom(src => src.User.Occupation))
-                .ForMember(dest => dest.InsuranceId, opt => opt.MapFrom(src => src.User.InsuranceId));
+                .ForMember(dest => dest.InsuranceId, opt => opt.MapFrom(src => src.User.InsuranceId))
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.User.CreatedAt));
 
         CreateMap<Patient, PatientDto>()
                 .ForMember(dest => dest.PatientId, opt => opt.MapFrom(src => src.PatientId))
@@ -156,7 +157,8 @@ public class MappingProfiles : Profile
                 .ForMember(dest => dest.BloodType, opt => opt.MapFrom(src => src.User.BloodType))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.User.Address))
                 .ForMember(dest => dest.Occupation, opt => opt.MapFrom(src => src.User.Occupation))
-                .ForMember(dest => dest.InsuranceId, opt => opt.MapFrom(src => src.User.InsuranceId));
+                .ForMember(dest => dest.InsuranceId, opt => opt.MapFrom(src => src.User.InsuranceId))
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.User.CreatedAt));
 
         CreateMap<Receptionist, ReceptionistDto>()
                     .ForMember(dest => dest.ReceptionistId, opt => opt.MapFrom(src => src.ReceptionistId))
