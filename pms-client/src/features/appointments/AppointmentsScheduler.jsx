@@ -19,9 +19,9 @@ function AppointmentsScheduler({ appointments }) {
 
     return {
       text: appointment?.appointmentType,
-      startDate: appointment.appointmentDateStart ? new Date(new Date(appointment.appointmentDateStart).setHours(new Date(appointment.appointmentDateStart).getHours() + 3))
+      startDate: appointment.appointmentDateStart ? new Date(new Date(appointment.appointmentDateStart))
       : new Date(),
-      endDate: appointment.appointmentDateEnd ? new Date(new Date(appointment.appointmentDateEnd).setHours(new Date(appointment.appointmentDateEnd).getHours() + 3))
+      endDate: appointment.appointmentDateEnd ? new Date(new Date(appointment.appointmentDateEnd))
       : new Date(),
       appointmentType: appointment?.appointmentType,
       id: appointment?.appointmentId,

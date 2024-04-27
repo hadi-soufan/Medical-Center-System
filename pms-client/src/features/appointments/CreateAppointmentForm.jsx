@@ -18,8 +18,8 @@ function CreateAppointmentForm({ onCreateAppointment, isLoading, error }) {
     const appointmentData = {
       Appointment: {
         id: uuidv4(),
-        appointmentDateStart: appointmentDateStart.toISOString(),
-        appointmentDateEnd: appointmentDateEnd.toISOString(),
+        appointmentDateStart: appointmentDateStart,
+        appointmentDateEnd: appointmentDateEnd,
         appointmentStatus: "Pending",
         appointmentType: formData.get("appointmentType"),
         notes: formData.get("notes"),
@@ -38,11 +38,11 @@ function CreateAppointmentForm({ onCreateAppointment, isLoading, error }) {
     <>
       <Form onSubmit={handleSubmit}>
         <FormRow label="Appointment Type" error={""}>
-          <Input type="text" name="appointmentType" required />
+          <Input type="text" name="appointmentType"  required />
         </FormRow>
 
         <FormRow label="Appointment Date" error={""}>
-          <Input type="datetime-local" name="appointmentDateStart" required />
+          <Input type="datetime-local" name="appointmentDateStart" value='2024-04-16T15:00:00' required />
         </FormRow>
 
         <FormRow label="Notes" error={""}>
