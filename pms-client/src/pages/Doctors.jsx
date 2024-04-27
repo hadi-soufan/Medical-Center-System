@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect  } from "react";
 import Heading from "../ui/Heading";
 import Row from "../ui/Row";
 import DoctorTable from "../features/doctor/DoctorTable";
@@ -13,6 +13,7 @@ import {
 } from "../api/stores/doctor/doctorStore";
 import {connect} from 'react-redux';
 
+
 /**
  * Renders the Doctors page component.
  * 
@@ -24,14 +25,10 @@ function Doctors() {
   const doctors = useSelector(state => state.doctors.doctors);
   const isLoading = useSelector(state => state.doctors.isLoading);
 
-
-
   useEffect(() => {
     dispatch(fetchDoctors());
   }, [dispatch]);
 
-
-  
 
   if (isLoading) return <Spinner />;
 

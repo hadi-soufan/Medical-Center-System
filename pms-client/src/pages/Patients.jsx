@@ -25,17 +25,11 @@ function Patients() {
     <>
       <Row type="horizontal">
         <Heading as="h1">All Patients</Heading>
-        {/* <DoctorTableOperations /> */}
       </Row>
 
       <Row>
         <PatientTable
-        //   handleDeleteDoctor={(id) => dispatch(deleteDoctor(id))}
           patients={patients}
-        //   getDoctorDetails={getDoctorDetails}
-        //   handleUpdate={(doctor) => {
-        //     dispatch(updateDoctor(doctor));
-        //   }}
           isDeleting={isLoading}
           setIsDeleting={() => {}}
         />
