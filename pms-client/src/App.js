@@ -8,10 +8,12 @@ import PatientAppointments from "./pages/PatientAppointments";
 import Doctors from "./pages/Doctors";
 import { Toaster } from "react-hot-toast";
 import Patients from "./pages/Patients";
+import MedicalHistory from "./pages/MedicalHistory";
 import Users from "./pages/Users";
 import ProtectedRoute from "./ui/ProtectedRoute";
 import Account from "./pages/Account";
 import { DarkModeProvider } from "./context/DarkModeContext";
+import UpdateMedicalHistory from "./features/medicalHistories/UpdateMedicalHistory";
 
 function App() {
   return (
@@ -32,6 +34,8 @@ function App() {
               <Route path="appointments" element={<PatientAppointments />} />
               <Route path="doctors" element={<Doctors />} />
               <Route path="patients" element={<Patients />} />
+              <Route path="medical-histories" element={<MedicalHistory />} />
+              <Route path="update-medical-history/:id" element={<UpdateMedicalHistory />} />
               <Route path="users" element={<Users />} />
               <Route path="account" element={<Account />} />
             </Route>
