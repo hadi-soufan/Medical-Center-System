@@ -21,7 +21,7 @@ namespace API.Controllers
         /// <inheritdoc />
         // GET: /api/medicalhistory/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<MedicalHistory>> GetAppoitment(Guid id)
+        public async Task<ActionResult<MedicalHistory>> GetMedicalHistory(Guid id)
         {
             return HandleResult(await Mediator.Send(new MedicalHistoryDetails.Query { Id = id }));
         }
