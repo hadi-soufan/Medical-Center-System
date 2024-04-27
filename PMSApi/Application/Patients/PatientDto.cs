@@ -27,6 +27,7 @@ namespace Application.Patients
         [StringLength(255)]
         public string Occupation { get; set; }
         public int InsuranceId { get; set; }
+        public DateTime CreatedAt { get; set; }
 
     }
 }
