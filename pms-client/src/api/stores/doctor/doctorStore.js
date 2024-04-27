@@ -1,15 +1,14 @@
-// src/store/doctorActions.js
-import { SET_DOCTORS, SET_LOADING, UPDATE_DOCTOR, DELETE_DOCTOR, GET_DOCTOR_DETAILS } from './doctorActionsTypes';
+import * as doctorActions from './doctorActionsTypes';
 import agent from "../../agent";
 import toast from "react-hot-toast";
 
 export const setDoctors = (doctors) => ({
-  type: SET_DOCTORS,
+  type: doctorActions.SET_DOCTORS,
   payload: doctors,
 });
 
 export const setLoading = (isLoading) => ({
-  type: SET_LOADING,
+  type: doctorActions.SET_LOADING,
   payload: isLoading,
 });
 
@@ -30,7 +29,7 @@ export const fetchDoctors = () => async (dispatch) => {
 export const deleteDoctor = (id) => async (dispatch) => {
   try {
     await agent.Doctors.delete(id);
-    dispatch({ type: DELETE_DOCTOR, payload: id });
+    dispatch({ type: doctorActions.DELETE_DOCTOR, payload: id });
     toast.success("Doctor deleted successfully");
   } catch (error) {
     console.error("Error deleting doctor: ", error);
@@ -45,7 +44,7 @@ export const updateDoctor = (updatedDoctor) => async (dispatch) => {
   }
   try {
     await agent.Doctors.update(updatedDoctor.doctorId, updatedDoctor);
-    dispatch({ type: UPDATE_DOCTOR, payload: updatedDoctor });
+    dispatch({ type: doctorActions.UPDATE_DOCTOR, payload: updatedDoctor });
     toast.success("Doctor updated successfully");
   } catch (error) {
     console.error("Error updating doctor: ", error);
@@ -56,7 +55,7 @@ export const updateDoctor = (updatedDoctor) => async (dispatch) => {
 export const getDoctorDetails = (id) => async (dispatch) => {
   try {
     const doctor = await agent.Doctors.get(id);
-    dispatch({ type: GET_DOCTOR_DETAILS, payload: doctor });
+    dispatch({ type: doctorActions.GET_DOCTOR_DETAILS, payload: doctor });
   } catch (error) {
     console.error("Error getting doctor details: ", error);
   }
