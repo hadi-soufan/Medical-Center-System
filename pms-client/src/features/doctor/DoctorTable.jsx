@@ -20,7 +20,7 @@ function DoctorTable({
   handleUpdate,
   isDeleting,
   setIsDeleting,
-  getDoctorDetails
+  getDoctorDetails,
 }) {
 
 
