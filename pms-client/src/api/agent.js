@@ -54,7 +54,7 @@ const Doctors = {
    * @param {string} id - The ID of the doctor to delete.
    * @returns {Promise} A promise that resolves when the doctor is deleted.
    */
-  delete: (id) => requests.del(`/doctor/${id}`),
+  delete: (id) => axios.delete(`/doctor/${id}`),
 };
 
 /**
@@ -124,12 +124,59 @@ const Appointments = {
   delete: (id) => axios.delete(`/appointments/${id}`),
 };
 
+const MedicalHistory = {
+  /**
+   * Get a list of all medical histories.
+   * @memberof MedicalHistory
+   * @function list
+   * @returns {Promise} A promise that resolves to the list of medical histories.
+   */
+  list: () => requests.get("/medicalhistory/all-medical-histories"),
+
+  /**
+   * Get a single medical history.
+   * @memberof MedicalHistory
+   * @function get
+   * @param {string} id - The ID of the medical history to get.
+   * @returns {Promise} A promise that resolves to the medical history.
+   */
+  get: (id) => requests.get(`/medicalhistory/${id}`),
+
+  /**
+   * Create a new medical history.
+   * @memberof MedicalHistory
+   * @function create
+   * @param {Object} data - The data for the new medical history.
+   * @returns {Promise} A promise that resolves when the medical history is created.
+   */
+  create: (data) => requests.post('/medicalhistory/create-new-medical-history', data),
+
+  /**
+   * Update a medical history.
+   * @memberof MedicalHistory
+   * @function update
+   * @param {string} id - The ID of the medical history to update.
+   * @param {Object} data - The updated data for the medical history.
+   * @returns {Promise} A promise that resolves when the medical history is updated.
+   */
+  update: (id, data) => requests.put(`/medicalhistory/${id}`, data),
+
+  /**
+   * Delete a medical history.
+   * @memberof MedicalHistory
+   * @function delete
+   * @param {string} id - The ID of the medical history to delete.
+   * @returns {Promise} A promise that resolves when the medical history is deleted.
+   */
+  delete: (id) => axios.delete(`/medicalhistory/${id}`),
+};
 
 const agent = {
   Doctors,
   Patients,
   Account,
   Appointments,
+  MedicalHistory,
 };
 
 export default agent;
