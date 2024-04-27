@@ -1,6 +1,7 @@
 ﻿using Application.Core;
 using Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application.MedicalHistoreis
@@ -33,7 +34,10 @@ namespace Application.MedicalHistoreis
             {
                 try
                 {
-                    var medicalHistory = await context.MedicalHistories.FindAsync(new object[] { request.Id }, cancellationToken: cancellationToken);
+                    var medicalHistory = await context.MedicalHistories
+                        .Include(mh => mh.Patient.User)
+                        
+                        .FirstOrDefaultAsync(mh => mh.MedicalHistoryId == request.Id, cancellationToken);
 
                     return Result<MedicalHistory>.Success(medicalHistory);
                 }
