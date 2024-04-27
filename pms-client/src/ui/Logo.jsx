@@ -14,7 +14,7 @@ const Img = styled.img`
 function Logo() {
   const {isDarkMode} = useDarkMode(); 
 
-  const src = isDarkMode ? '' : CenterLogo;
+  const src = isDarkMode ? CenterLogo : CenterLogo;
 
 
   return (
