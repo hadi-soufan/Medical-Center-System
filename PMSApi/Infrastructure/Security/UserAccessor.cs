@@ -4,7 +4,7 @@ using System.Security.Claims;
 
 namespace Infrastructure.Security
 {
-    public class UserAccessor : IUserAccessors
+    public class UserAccessor : IUserAccessor
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 

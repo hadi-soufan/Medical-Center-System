@@ -62,6 +62,7 @@ namespace Domain.Entities
         public ICollection<Staff> Staffs { get; set; } = new List<Staff>();
         public ICollection<Nurse> Nurses { get; set; } = new List<Nurse>();
         public ICollection<Accountant> Accountants { get; set; } = new List<Accountant>();
+        public ICollection<PatientPhoto> PatientPhotos { get; set; }
 
 
 

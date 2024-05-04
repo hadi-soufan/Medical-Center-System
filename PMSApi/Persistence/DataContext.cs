@@ -17,6 +17,7 @@ namespace Persistence
         public DbSet<Staff> Staffs { get; set; }
         public DbSet<Nurse> Nurses { get; set; }
         public DbSet<Accountant> Accountants { get; set; }
+        public DbSet<PatientPhoto> PatientPhotos { get; set; }
 
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {

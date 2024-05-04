@@ -1,4 +1,5 @@
-﻿using Application.Doctors;
+﻿using Application.Core;
+using Application.Doctors;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,9 +13,9 @@ namespace API.Controllers
         /// <inheritdoc />
         // GET: /api/doctor/all-doctors
         [HttpGet("all-doctors")]
-        public async Task<IActionResult> GetDoctors()
+        public async Task<IActionResult> GetDoctors([FromQuery] PagingParams param)
         {
-            return HandleResult(await Mediator.Send(new DoctorList.Query()));
+            return HandlePagedResult(await Mediator.Send(new DoctorList.Query{ Params = param}));
         }
 
 

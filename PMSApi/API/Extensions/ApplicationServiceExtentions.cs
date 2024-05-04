@@ -6,6 +6,8 @@ using FluentValidation;
 using Application.Appointments;
 using API.Services;
 using Application.Interfaces;
+using Infrastructure.Photos;
+using Infrastructure.Security;
 
 namespace API.Extensions
 {
@@ -44,8 +46,11 @@ namespace API.Extensions
             services.AddValidatorsFromAssemblyContaining<AppointmentCreate>();
             services.AddHttpContextAccessor();
             services.AddSignalR();
+            services.Configure<CloudinarySettings>(config.GetSection("Cloudinary"));
 
             services.AddScoped<IAppointmentUpdateSender, AppointmentUpdateSender>();
+            services.AddScoped<IPhotoAccessor, PhotoAccessor>();
+            services.AddScoped<IUserAccessor, UserAccessor>();
 
             return services;
         }

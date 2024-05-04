@@ -14,12 +14,15 @@ namespace Application.Doctors
         /// <summary>
         /// Query to retrieve a list of doctors.
         /// </summary>
-        public class Query : IRequest<Result<List<DoctorDto>>> { }
+        public class Query : IRequest<Result<PageList<DoctorDto>>>
+        {
+            public PagingParams Params { get; set; }
+        }
 
         /// <summary>
         /// Handler to process the DoctorList query.
         /// </summary>
-        public class Handler(ApplicationDbContext context, IMapper mapper) : IRequestHandler<Query, Result<List<DoctorDto>>>
+        public class Handler(ApplicationDbContext context, IMapper mapper) : IRequestHandler<Query, Result<PageList<DoctorDto>>>
         {
             /// <summary>
             /// Handles the DoctorList query.
@@ -27,27 +30,28 @@ namespace Application.Doctors
             /// <param name="request">The query request.</param>
             /// <param name="cancellationToken">The cancellation token.</param>
             /// <returns>A result containing the list of doctors.</returns>
-            public async Task<Result<List<DoctorDto>>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<PageList<DoctorDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
                 try
                 {
                     var doctors = await context.Doctors
-                    .Include(d => d.User)
-                    .Include(d => d.Appointments)
-                    .Where(d => !d.IsDeleted)
-                    .ToListAsync(cancellationToken);
-
-                    if (doctors.Count is 0) return Result<List<DoctorDto>>.Failure("No Doctors data");
+                        .Include(d => d.User)
+                        .Include(d => d.Appointments)
+                        .Where(d => !d.IsDeleted)
+                        .ToListAsync();
 
                     var doctorDtos = mapper.Map<List<DoctorDto>>(doctors);
 
-                    return Result<List<DoctorDto>>.Success(doctorDtos);
+                    var query = await PageList<DoctorDto>.CreateAsync(doctorDtos, request.Params.PageNumber, request.Params.PageSize);
+
+                    return Result<PageList<DoctorDto>>.Success(query);
                 }
                 catch (Exception ex)
                 {
-                    return Result<List<DoctorDto>>.Failure(ex.Message);
+                    return Result<PageList<DoctorDto>>.Failure(ex.Message);
                 }
             }
+
         }
 
     }

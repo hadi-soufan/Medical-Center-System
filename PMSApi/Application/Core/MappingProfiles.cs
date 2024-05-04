@@ -221,5 +221,7 @@ public class MappingProfiles : Profile
                 .ForMember(dest => dest.InsuranceId, opt => opt.MapFrom(src => src.User.InsuranceId))
                 .ForMember(dest => dest.AppointmentCount, opt => opt.MapFrom(src => src.Appointments.Count));
 
+
+        CreateMap<PatientPhoto, PatientPhoto>();
     }
 }
