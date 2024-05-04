@@ -42,7 +42,7 @@ function UpdateMedicalHistory() {
     <>
        <Row type="horizontal">
         <HeadingGroup>
-          <Heading as="h1">Medical History - {medicalHistoryDetails.patientName}</Heading>
+          <Heading as="h1">Medical History - {medicalHistoryDetails.patient.user.displayName}</Heading>
         </HeadingGroup>
       </Row>
 

@@ -6,6 +6,7 @@ import usersReducer  from "./user/usersReducer";
 import appointmentReducer  from './appointment/appointmentReducer';
 import patientReducer from "./patient/patientReducer";
 import medicalHistoryReducer from "./medicalHistory/medicalHistoryReducer";
+import patientPhotoReducers from './patientPhoto/patientPhotoReducers'
 
 const rootReducer = combineReducers({
   doctors: doctorsReducer,
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   users: usersReducer,
   appointments: appointmentReducer,
   medicalHistories: medicalHistoryReducer,
+  patientPhotos: patientPhotoReducers
 });
 
 /**

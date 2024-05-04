@@ -1,6 +1,24 @@
 import axios from "axios";
+import { PaginatedResult } from "../utils/pagination";
 
 axios.defaults.baseURL = "http://localhost:5000/api";
+
+axios.interceptors.response.use(
+  response => {
+    const paginationHeader = response.headers['pagination'];
+    if (paginationHeader) {
+      const pagination = JSON.parse(paginationHeader);
+      response.data = new PaginatedResult(response.data, pagination);
+    }
+    return response;
+  },
+  error => {
+    return Promise.reject(error);
+  }
+);
+
+
+
 
 const responseBody = (response) => response.data;
 
@@ -35,8 +53,9 @@ const Doctors = {
    * @function list
    * @returns {Promise} A promise that resolves to the list of doctors.
    */
-  list: () => requests.get("/doctor/all-doctors"),
+  list: (params) => requests.get(`/doctor/all-doctors`, {params}).then(responseBody),
 
+  get: (id) => requests.get(`/doctor/${id}`),
   /**
    * Update a doctor.
    * @memberof Doctors
@@ -171,12 +190,20 @@ const MedicalHistory = {
   delete: (id) => axios.delete(`/medicalhistory/${id}`),
 };
 
+const PatientPhotos = {
+  list: () => requests.get("/photo"),
+  get: (id) => requests.get(`/photo/${id}`),
+  create: (data) => requests.post('/photo', data),
+  delete: (id) => axios.delete(`/photo/${id}`),
+}
+
 const agent = {
   Doctors,
   Patients,
   Account,
   Appointments,
   MedicalHistory,
+  PatientPhotos,
 };
 
 export default agent;

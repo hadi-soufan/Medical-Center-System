@@ -2,6 +2,7 @@ import React from "react";
 import DoctorRow from "./DoctorRow";
 import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
+import Pagination from "../../ui/Pagination";
 
 /**
  * Renders a table of doctors.
@@ -52,6 +53,10 @@ function DoctorTable({
             )
           )}
         />
+
+        <Table.Footer>
+          <Pagination />
+        </Table.Footer>
         
       </Table>
     </Menus>

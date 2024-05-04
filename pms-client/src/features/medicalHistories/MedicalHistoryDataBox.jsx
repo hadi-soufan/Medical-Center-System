@@ -14,6 +14,8 @@ import {
 } from "../../api/stores/medicalHistory/medicalHistoryStore";
 import Button from "../../ui/Button";
 import MedicalHistoryForm from "./MedicalHistoryForm";
+import MedicalHistoryFileManagement from "./MedicalHistoryFileManagement";
+import Leb from '../../assets/img/Flags/Lebanon.png'
 
 const StyledBookingDataBox = styled.section`
   /* Box */
@@ -68,6 +70,11 @@ const Guest = styled.div`
   & p:first-of-type {
     font-weight: 500;
     color: var(--color-grey-700);
+  }
+
+  & img {
+    width: 24px;  // Set the flag image size as required
+    height: 16px;
   }
 `;
 
@@ -138,7 +145,7 @@ function MedicalHistoryDataBox({ medicalHistoryData }) {
     console.log("formData: ", formData);
   };
 
-
+console.log(medicalHistoryData.patient.userId);
 
   return (
     <StyledBookingDataBox>
@@ -167,7 +174,8 @@ function MedicalHistoryDataBox({ medicalHistoryData }) {
 
       <Section>
         <Guest>
-          <p>{medicalHistoryData.patientName}</p>
+        <img src={Leb} alt={`${medicalHistoryData.patient.user.nationality} flag`} />
+          <p>{medicalHistoryData.patient.user.displayName}</p>
           <span>&bull;</span>
           <p>{medicalHistoryData.patient.user.email}</p>
           <span>&bull;</span>
@@ -211,7 +219,7 @@ function MedicalHistoryDataBox({ medicalHistoryData }) {
       )}
 
       {activeTab === "files" && (
-          <p>files</p>
+          <MedicalHistoryFileManagement />
       )}
         
       </Section>

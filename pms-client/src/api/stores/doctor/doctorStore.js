@@ -2,9 +2,10 @@ import * as doctorActions from './doctorActionsTypes';
 import agent from "../../agent";
 import toast from "react-hot-toast";
 
-export const setDoctors = (doctors) => ({
+import { Pagination, PagingParams, PaginatedResult } from '../../../utils/pagination'
+export const setDoctors = (doctors, pagination) => ({
   type: doctorActions.SET_DOCTORS,
-  payload: doctors,
+  payload: { doctors, pagination },
 });
 
 export const setLoading = (isLoading) => ({
@@ -12,12 +13,30 @@ export const setLoading = (isLoading) => ({
   payload: isLoading,
 });
 
-export const fetchDoctors = () => async (dispatch) => {
+
+const axiosParams = (pagingParams) => {
+  const params = new URLSearchParams();
+  params.append('pageNumber', pagingParams.pageNumber.toString());
+  params.append('pageSize', pagingParams.pageSize.toString());
+  return params;
+};
+
+export const fetchDoctors = (page = 1, pageSize = 2) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const response = await agent.Doctors.list();
-    const doctors = response && response.$values ? response.$values : [];
-    dispatch(setDoctors(doctors));
+    const response = await agent.Doctors.list(page, pageSize);
+    console.log(response);
+    const doctors = response && response.data && response.data.$values ? response.data.$values : [];
+    console.log("docotrs:" , doctors);
+    const pagination = new Pagination(
+      response.pagination.currentPage,
+      response.pagination.itemsPerPage,
+      response.pagination.totalItems,
+      response.pagination.totalPages
+    );
+    console.log("pagination: ", pagination);
+    const paginatedResult = new PaginatedResult(doctors, pagination);
+    dispatch(setDoctors(doctors, pagination));
   } catch (error) {
     console.error("Error fetching doctors data: ", error);
     dispatch(setDoctors([]));
@@ -25,6 +44,9 @@ export const fetchDoctors = () => async (dispatch) => {
     dispatch(setLoading(false));
   }
 };
+
+
+
 
 export const deleteDoctor = (id) => async (dispatch) => {
   try {
