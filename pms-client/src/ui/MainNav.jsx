@@ -1,6 +1,8 @@
+import React from "react";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import { HiOutlineCalendarDays, HiOutlineCalendar, HiOutlineCog6Tooth, HiOutlineHome, HiOutlineUser,  HiOutlineUsers } from 'react-icons/hi2';
+import { useSelector } from "react-redux";
 
 const NavList = styled.ul`
   display: flex;
@@ -47,58 +49,71 @@ const StyledNavLink = styled(NavLink)`
 `;
 
 function MainNav() {
+  const user = useSelector(state => state.users.user) || {};
   return (
     <nav>
       <NavList>
-        <li>
-          <StyledNavLink to="/dashboard">
-          <HiOutlineHome />
-          <span>Home</span>
-          </StyledNavLink>
-          
-        </li>
+        {user.role === 'Admin' && (
+          <>
+            <li>
+              <StyledNavLink to="/dashboard">
+                <HiOutlineHome />
+                <span>Home</span>
+              </StyledNavLink>
+            </li>
 
-        <li>
-          <StyledNavLink to="/appointments">
-            <HiOutlineCalendarDays />
-            <span>Appointments</span>
-          </StyledNavLink>
-        </li>
+            <li>
+              <StyledNavLink to="/appointments">
+                <HiOutlineCalendarDays />
+                <span>Appointments</span>
+              </StyledNavLink>
+            </li>
 
-        <li>
-          <StyledNavLink to="/doctors">
-          <HiOutlineUser />
-            <span>Doctors</span>
-          </StyledNavLink>
-        </li>
+            <li>
+              <StyledNavLink to="/doctors">
+                <HiOutlineUser />
+                <span>Doctors</span>
+              </StyledNavLink>
+            </li>
 
-        <li>
-          <StyledNavLink to="/patients">
-            <HiOutlineUsers />
-            <span>Patients</span>
-          </StyledNavLink>
-        </li>
+            <li>
+              <StyledNavLink to="/patients">
+                <HiOutlineUsers />
+                <span>Patients</span>
+              </StyledNavLink>
+            </li>
 
-        <li>
-          <StyledNavLink to="/medical-histories">
-            <HiOutlineCalendar />
-            <span>Medical History</span>
-          </StyledNavLink>
-        </li>
+            <li>
+              <StyledNavLink to="/medical-histories">
+                <HiOutlineCalendar />
+                <span>Medical History</span>
+              </StyledNavLink>
+            </li>
 
-        <li>
-          <StyledNavLink to="/users">
-            <HiOutlineUsers />
-            <span>Users</span>
-          </StyledNavLink>
-        </li>
+            <li>
+              <StyledNavLink to="/users">
+                <HiOutlineUsers />
+                <span>Users</span>
+              </StyledNavLink>
+            </li>
 
-        <li>
-          <StyledNavLink to="/settings">
-            <HiOutlineCog6Tooth />
-            <span>Settings</span>
-          </StyledNavLink>
-        </li>
+            <li>
+              <StyledNavLink to="/settings">
+                <HiOutlineCog6Tooth />
+                <span>Settings</span>
+              </StyledNavLink>
+            </li>
+          </>
+        )}
+
+        {user.role === 'Patient' && (
+          <li>
+            <StyledNavLink to="/patients">
+              <HiOutlineUsers />
+              <span>Patients</span>
+            </StyledNavLink>
+          </li>
+        )}
       </NavList>
     </nav>
   )
