@@ -8,9 +8,6 @@ using Persistence;
 
 namespace Application.MedicalHistories
 {
-    /// <summary>
-    /// Represents a query to retrieve a list of medical histories.
-    /// </summary>
     public class MedicalHistoryList
     {
         /// <summary>
