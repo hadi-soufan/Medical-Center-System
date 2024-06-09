@@ -1,28 +1,26 @@
 import React, { useCallback } from "react";
 import { Scheduler, View, Editing } from "devextreme-react/scheduler";
 import { useDispatch } from "react-redux";
-import {
-  updateAppointment,
-  deleteAppointment,
-} from "../../api/stores/appointment/appointmentStore";
+import { updateAppointment, deleteAppointment } from "../../api/stores/appointment/appointmentStore";
 import { connect } from "react-redux";
 
 function AppointmentsScheduler({ appointments }) {
   const dispatch = useDispatch();
   const currentDate = new Date();
 
-  const dataSource =
-  appointments?.map((appointment) => {
+  const dataSource = appointments?.map((appointment) => {
     if (!appointment) {
       return null;
     }
 
+    // Adjust start date by adding 3 hours
+    const adjustedStartDate = new Date(new Date(appointment.appointmentDateStart).setHours(new Date(appointment.appointmentDateStart).getHours() + 3));
+    const endDate = appointment.appointmentDateEnd ? new Date(appointment.appointmentDateEnd) : new Date(adjustedStartDate);
+
     return {
       text: appointment?.appointmentType,
-      startDate: appointment.appointmentDateStart ? new Date(new Date(appointment.appointmentDateStart))
-      : new Date(),
-      endDate: appointment.appointmentDateEnd ? new Date(new Date(appointment.appointmentDateEnd))
-      : new Date(),
+      startDate: adjustedStartDate,
+      endDate: endDate,
       appointmentType: appointment?.appointmentType,
       id: appointment?.appointmentId,
       description: appointment?.notes,
@@ -30,9 +28,7 @@ function AppointmentsScheduler({ appointments }) {
       doctorName: appointment?.doctorUsername,
       status: appointment?.appointmentStatus,
     };
-    }).filter(Boolean) || [];
-
-    
+  }).filter(Boolean) || [];
 
   const onAppointmentFormOpening = (e) => {
     const { form } = e;
@@ -101,6 +97,4 @@ function AppointmentsScheduler({ appointments }) {
   );
 }
 
-export default connect(null, { updateAppointment, deleteAppointment })(
-  AppointmentsScheduler
-);
+export default connect(null, { updateAppointment, deleteAppointment })(AppointmentsScheduler);
