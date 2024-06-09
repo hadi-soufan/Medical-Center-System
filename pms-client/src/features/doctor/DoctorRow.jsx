@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import styled from "styled-components";
+import styled, {css} from "styled-components";
 import UpdateDoctor from "./UpdateDoctor";
 import Button from "../../ui/Button";
 import { HiTrash, HiEye } from "react-icons/hi2";
@@ -14,6 +14,22 @@ const Doctor = styled.div`
   font-weight: 600;
   color: var(--color-grey-600);
   font-family: "Sono";
+  ${({ isCount }) =>
+    isCount &&
+    css`
+      color: var(--color-grey-50);
+    `}
+`;
+
+const Tag = styled.div`
+  background-color: #5cb85c;
+  text-align: center;
+  padding: 0.1em 0.5em;
+  border-radius: 100px;
+  width: fit-content;
+  text-transform: uppercase;
+  font-size: 2rem;
+  font-weight: 600;
 `;
 
 /**
@@ -33,58 +49,62 @@ function DoctorRow({
   isDeleting,
   getDoctorDetails,
 }) {
-
   const dispatch = useDispatch();
-  const doctorDetails = useSelector(state => state.doctor); 
+  const doctorDetails = useSelector((state) => state.doctor);
 
   useEffect(() => {
     dispatch(getDoctorDetails(doctor.doctorId));
   }, [dispatch, getDoctorDetails, doctor.doctorId]);
 
-
   return (
-      <Table.Row role="row">
-        <Doctor>{doctor.displayName}</Doctor>
-        <Doctor>{doctor.email}</Doctor>
-        <Doctor>{doctor.phoneNumber}</Doctor>
-        <Doctor>{doctor.doctorLicenseId}</Doctor>
-        <Doctor>{doctor.appointmentCount}</Doctor>
-        <div>
-          <Modal>
-          <Modal.Open opens='doctor-details'>
-          <Button
+    <Table.Row role="row">
+      <Doctor>{doctor.displayName}</Doctor>
+      <Doctor>{doctor.email}</Doctor>
+      <Doctor>{doctor.phoneNumber}</Doctor>
+      <Doctor>{doctor.doctorLicenseId}</Doctor>
+      {doctor.appointmentCount > 0 ? (
+        <Tag>
+          <Doctor isCount={true}>{doctor.appointmentCount}</Doctor>
+        </Tag>
+      ) : (
+        <Doctor>No Appointments</Doctor>
+      )}
+
+      <div>
+        <Modal>
+          <Modal.Open opens="doctor-details">
+            <Button
               onClick={async () => {
                 const doctorDetails = await getDoctorDetails(doctor.doctorId);
-                console.log('doctorDetails', doctorDetails);  
+                console.log("doctorDetails: ", doctorDetails);
               }}
             >
               <HiEye />
             </Button>
           </Modal.Open>
-          <Modal.Window name='doctor-details'>
+          <Modal.Window name="doctor-details">
             <DoctorDetails doctorDetails={doctorDetails} />
           </Modal.Window>
-            
 
-            <UpdateDoctor doctorData={doctor} handleUpdate={handleUpdate} />
+          <UpdateDoctor doctorData={doctor} handleUpdate={handleUpdate} />
 
-            <Modal.Open opens="delete-doctor">
-              <Button>
-                <HiTrash />
-              </Button>
-            </Modal.Open>
-            <Modal.Window name="delete-doctor">
-              <ConfirmDelete
-                resourceName={doctor.displayName}
-                disabled={isDeleting}
-                onConfirm={() => {
-                  handleDeleteDoctor(doctor.doctorId);
-                }}
-              />
-            </Modal.Window>
-          </Modal>
-        </div>
-      </Table.Row>
+          <Modal.Open opens="delete-doctor">
+            <Button>
+              <HiTrash />
+            </Button>
+          </Modal.Open>
+          <Modal.Window name="delete-doctor">
+            <ConfirmDelete
+              resourceName={doctor.displayName}
+              disabled={isDeleting}
+              onConfirm={() => {
+                handleDeleteDoctor(doctor.doctorId);
+              }}
+            />
+          </Modal.Window>
+        </Modal>
+      </div>
+    </Table.Row>
   );
 }
 

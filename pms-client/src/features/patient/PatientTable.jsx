@@ -10,7 +10,7 @@ function PatientTable({patients}) {
       <Table.Header>
         <div>Name</div>
         <div>Date Check In</div>
-        <div>Doctor Assgined</div>
+        <div>Medical Record</div>
         <div>Disease</div>
         <div>Phone</div>
         <div>Actions</div>
@@ -22,7 +22,16 @@ function PatientTable({patients}) {
           patient && (
             <PatientRow
               key={patient.patientId}
-              patient={patient}
+              patient={{
+                  displayName: patient.displayName,
+                  createdAt: patient.createdAt,
+                  medicalHistoryId: patient.medicalHistoryId,
+                  phoneNumber: patient.phoneNumber,
+                  patientLicenseId: patient.patientLicenseId,
+                  appointmentCount: patient.appointmentCount,
+                  medicalHistory: patient?.user?.patients?.$values[0]?.medicalHistory?.medicalHistoryId,
+                  diagnosis: patient?.user?.patients?.$values[0]?.medicalHistory?.diagnosis || "N/A"
+                }}
             //   handleDeleteDoctor={handleDeleteDoctor}
             //   isDeleting={isDeleting}
             //   setIsDeleting={setIsDeleting}

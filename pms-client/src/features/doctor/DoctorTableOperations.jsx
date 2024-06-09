@@ -6,7 +6,7 @@ function DoctorTableOperations() {
   return (
     <>
         <TableOperations>
-            <Filter />
+            test
         </TableOperations>
     </>
   )
