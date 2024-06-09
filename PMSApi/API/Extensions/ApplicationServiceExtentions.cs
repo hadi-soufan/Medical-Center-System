@@ -29,7 +29,8 @@ namespace API.Extensions
 
             services.AddDbContext<ApplicationDbContext>(opt =>
             {
-                opt.UseNpgsql(config.GetConnectionString("DefaultConnection"));
+                var connectionString = config.GetConnectionString("DefaultConnection") ?? Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
+                opt.UseNpgsql(connectionString);
             });
 
             services.AddCors(opt =>
@@ -41,6 +42,7 @@ namespace API.Extensions
             });
 
             services.AddMediatR(typeof(AppointmentsList.Handler));
+            services.AddMediatR(typeof(AppointmentDetails.Handler).Assembly);
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
             services.AddFluentValidationAutoValidation();
             services.AddValidatorsFromAssemblyContaining<AppointmentCreate>();
@@ -51,6 +53,8 @@ namespace API.Extensions
             services.AddScoped<IAppointmentUpdateSender, AppointmentUpdateSender>();
             services.AddScoped<IPhotoAccessor, PhotoAccessor>();
             services.AddScoped<IUserAccessor, UserAccessor>();
+            services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+
 
             return services;
         }
