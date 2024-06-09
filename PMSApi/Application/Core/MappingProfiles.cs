@@ -4,6 +4,7 @@ using Application.Doctors;
 using Application.MedicalHistoreis;
 using Application.Nurses;
 using Application.Patients;
+using Application.Profile;
 using Application.Receptionist;
 using Application.Staffs;
 using AutoMapper;
@@ -23,6 +24,7 @@ public class MappingProfiles : Profile
         CreateMap<MedicalHistory, MedicalHistory>();
 
         CreateMap<PatientDto, Patient>();
+        CreateMap<AppUser, ProfileDto>();
 
         CreateMap<Receptionist, ReceptionistDto>()
                     .ForMember(dest => dest.ReceptionistId, opt => opt.MapFrom(src => src.ReceptionistId))
@@ -144,7 +146,9 @@ public class MappingProfiles : Profile
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.User.Address))
                 .ForMember(dest => dest.Occupation, opt => opt.MapFrom(src => src.User.Occupation))
                 .ForMember(dest => dest.InsuranceId, opt => opt.MapFrom(src => src.User.InsuranceId))
-                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.User.CreatedAt));
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.User.CreatedAt))
+                .ForMember(dest => dest.MedicalHistoryId, opt => opt.MapFrom(src => src.MedicalHistory.MedicalHistoryId))
+                .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User));
 
         CreateMap<Patient, PatientDto>()
                 .ForMember(dest => dest.PatientId, opt => opt.MapFrom(src => src.PatientId))
