@@ -36,7 +36,7 @@ namespace Application.Doctors
                 {
                     var doctors = await context.Doctors
                         .Include(d => d.User)
-                        .Include(d => d.Appointments)
+                        .Include(d => d.Appointments.Where(a => !a.IsCancelled))
                         .Where(d => !d.IsDeleted)
                         .ToListAsync();
 
