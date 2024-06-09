@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import PropTypes from 'prop-types'
 
 const StyledStat = styled.div`
   /* Box */
