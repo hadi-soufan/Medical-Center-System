@@ -5,7 +5,7 @@ axios.defaults.baseURL = "http://localhost:5000/api";
 
 axios.interceptors.response.use(
   response => {
-    const paginationHeader = response.headers['pagination'];
+    const paginationHeader = response.headers['Pagination'];
     if (paginationHeader) {
       const pagination = JSON.parse(paginationHeader);
       response.data = new PaginatedResult(response.data, pagination);
