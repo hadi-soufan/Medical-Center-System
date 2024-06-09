@@ -74,14 +74,10 @@ export const createMedicalHistory = (medicalHistoryData) => async (dispatch) => 
     dispatch(createMedicalHistoryRequest());
     try {
       const response = await axios.post('http://localhost:5000/api/medicalhistory/create-new-medical-history', medicalHistoryData);
-      console.log("response: ", response.data );
       dispatch(createMedicalHistorySuccess(response.data));
-      console.log("medicalHistoryData: ", medicalHistoryData );
       toast.success("Medical History created successfully");
     } catch (error) {
-      console.log("medicalHistoryData: ", medicalHistoryData );
-      console.error("Error creating medical history: ", error);
-      toast.error("Failed to create medical history");
+      toast.error("This patient already have a medical history record");
       dispatch(createMedicalHistoryFailure(error));
     }
   };
@@ -95,6 +91,7 @@ export const getMedicalHistories = () => async (dispatch) => {
     dispatch(setMedicalHistories(medicalHistories));
   } catch (error) {
     console.error("Error fetching Medical Histories data: ", error);
+    toast.error("Error fetching Medical Histories data");
     dispatch(setMedicalHistories([]));
   } finally {
     dispatch(setLoading(false));
@@ -115,8 +112,7 @@ export const getMedicalHistoryDetails = (id) => async (dispatch) => {
   }
 };
 
-export const updateMedicalHistory =
-  (id, medicalHistoryData) => async (dispatch) => {
+export const updateMedicalHistory = (id, medicalHistoryData) => async (dispatch) => {
     dispatch(updateMedicalHistoryRequest());
     try {
       const response = await agent.MedicalHistory.update(id, medicalHistoryData);
@@ -130,7 +126,6 @@ export const updateMedicalHistory =
   };
 
 export const deleteMedicalHistory = (id) => async (dispatch) => {
-  console.log("deleteMedicalHistory action called");
   dispatch(deleteMedicalHistoryRequest());
   try {
     await agent.MedicalHistory.delete(id);

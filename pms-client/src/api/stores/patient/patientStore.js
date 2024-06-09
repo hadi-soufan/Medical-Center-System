@@ -24,13 +24,13 @@ export const setLoading = (isLoading) => ({
   payload: isLoading,
 });
 
-// Action creators
 export const fetchPatients = () => async (dispatch) => {
   dispatch(setLoading(true));
   try {
     const response = await agent.Patients.list();
     const patients = response && response.$values ? response.$values : [];
-    dispatch(setPatients(patients));
+    console.log("patients from store: ", patients);
+    dispatch(setPatients(patients));  
   } catch (error) {
     console.error("Error getting all patients: ", error);
   }

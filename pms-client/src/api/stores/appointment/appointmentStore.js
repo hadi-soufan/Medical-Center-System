@@ -44,6 +44,7 @@ export const getAllAppointments = () => async (dispatch) => {
       type: appointmentActions.GET_ALL_APPOINTMENTS_SUCCESS,
       payload: response.$values,
     });
+    console.log("Appointments from store:", response.$values);
     dispatch({ type: appointmentActions.CLEAR_ERROR });
   } catch (error) {
     console.error("Error fetching appointments:", error);

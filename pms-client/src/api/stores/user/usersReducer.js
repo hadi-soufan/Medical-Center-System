@@ -5,7 +5,6 @@ const initialState = {
     isLoading: false,
   };
   
-  // Define the reducer function
   export default function usersReducer(state = initialState, action) {
     switch (action.type) {
       case userActions.LOGIN_REQUEST:
@@ -14,12 +13,6 @@ const initialState = {
         return { ...state, user: action.payload, isLoading: false, error: null };
       case userActions.LOGIN_FAILURE:
         return { ...state, isLoading: false, error: action.payload };
-      case userActions.GET_CURRENT_USER_REQUEST:
-        return { ...state, isLoading: true };
-      case userActions.GET_CURRENT_USER_SUCCESS:
-        return { ...state, user: action.payload, isLoading: false };
-      case userActions.GET_CURRENT_USER_FAILURE:
-        return { ...state, error: action.payload, isLoading: false };
       case userActions.REGISTER_USER_REQUEST:
         return { ...state, isLoading: true };
       case userActions.REGISTER_USER_SUCCESS:
@@ -28,6 +21,8 @@ const initialState = {
         return { ...state, error: action.payload, isLoading: false };
       case userActions.LOGOUT:
         return { ...state, user: null };
+      case userActions.LOAD_USER_FROM_LOCAL_STORAGE:
+      return { ...state, user: action.payload };
       default:
         return state;
     }

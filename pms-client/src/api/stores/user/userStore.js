@@ -3,17 +3,7 @@ import toast from "react-hot-toast";
 import * as userActions from './userActionsTypes';
 
 
-const getCurrentUserRequest = () => ({ type: userActions.GET_CURRENT_USER_REQUEST });
 
-const getCurrentUserSuccess = (user) => ({
-  type: userActions.GET_CURRENT_USER_SUCCESS,
-  payload: user,
-});
-
-const getCurrentUserFailure = (error) => ({
-  type: userActions.GET_CURRENT_USER_FAILURE,
-  payload: error,
-});
 
 const registerUserRequest = () => ({ type: userActions.REGISTER_USER_REQUEST });
 const registerUserSuccess = (user) => ({
@@ -40,7 +30,18 @@ export const setLoading = (isLoading) => ({
   payload: isLoading,
 });
 
-// Define the login action creator
+const loadUserFromLocalStorage = () => {
+  const user = JSON.parse(localStorage.getItem('user'));
+  return {
+    type: userActions.LOAD_USER_FROM_LOCAL_STORAGE,
+    payload: user,
+  };
+};
+
+export const loadUser = () => (dispatch) => {
+  dispatch(loadUserFromLocalStorage());
+};
+
 export const loginAction = (username, password) => {
   return async (dispatch) => {
     try {
@@ -58,30 +59,19 @@ export const loginAction = (username, password) => {
   };
 };
 
-export const getCurrentUser = () => async (dispatch) => {
-  dispatch(getCurrentUserRequest());
-  try {
-    const user = await agent.Account.current();
 
-    dispatch(getCurrentUserSuccess(user));
-
-    console.log("currentUser", user.username);
-  } catch (error) {
-    dispatch(getCurrentUserFailure(error.toString()));
-  }
-};
 
 export const registerUser = (userDetails) => async (dispatch) => {
   console.log("Registering user with details:", userDetails);
   dispatch(registerUserRequest());
   try {
     const user = await agent.Account.register(userDetails);
-
     dispatch(registerUserSuccess(user));
+    toast.success("User registered successfully!");
   } catch (error) {
-    console.log("Registration error:", error.response.data.errors);
-    dispatch(registerUserFailure(error.toString()));
-    console.log(error);
+    const errorMessage = error.response?.data ?? error.message;
+    dispatch(registerUserFailure(errorMessage));
+    toast.error(`${errorMessage}`);
   }
 };
 
