@@ -9,7 +9,7 @@ namespace Persistence
     /// </summary>
     public class ApplicationDbContext : IdentityDbContext<AppUser>, IApplicationDbContext
     {
-        public DbSet<Appointment> Appointments { get; set; }
+        public virtual DbSet<Appointment> Appointments { get; set; }
         public DbSet<MedicalHistory> MedicalHistories { get; set; }
         public DbSet<Patient> Patients { get; set; }
         public DbSet<Doctor> Doctors { get; set; }
