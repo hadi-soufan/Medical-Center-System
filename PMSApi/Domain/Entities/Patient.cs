@@ -20,5 +20,8 @@ namespace Domain.Entities
 
         public ICollection<Appointment> Appointments { get; set; }
 
+        public string MedicalHistoryId { get; set; }
+        public MedicalHistory MedicalHistory { get; set; }
+
     }
 }
