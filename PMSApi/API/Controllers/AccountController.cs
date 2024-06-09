@@ -200,6 +200,15 @@ namespace API.Controllers
             return HandleResult(await Mediator.Send(new UserList.Query()));
         }
 
+        /// <inheritdoc />
+        // GET: /api/account/user/{username}
+        [HttpGet("user/{displayName}")]
+        public async Task<IActionResult> GetUserById(string displayName)
+        {
+            var query = new UserDetails.Query { DisplayName = displayName };
+            return HandleResult(await Mediator.Send(query));
+        }
+
         private UserDto CreateUserObject(AppUser user)
         {
             return new UserDto
