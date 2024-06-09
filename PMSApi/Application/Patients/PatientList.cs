@@ -34,6 +34,7 @@ namespace Application.Patients
                 {
                     var patients = await context.Patients
                     .Include(p => p.User)
+                    .Include(p => p.MedicalHistory)
                     .Where(p => !p.IsDeleted)
                     .ToListAsync(cancellationToken);
 

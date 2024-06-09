@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Domain.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Application.Patients
 {
@@ -28,6 +29,8 @@ namespace Application.Patients
         public string Occupation { get; set; }
         public int InsuranceId { get; set; }
         public DateTime CreatedAt { get; set; }
+        public string MedicalHistoryId { get; set; }
+        public AppUser User{ get; set; }
 
     }
 }
