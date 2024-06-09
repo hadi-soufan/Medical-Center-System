@@ -41,7 +41,7 @@ namespace Application.Appointments
                 {
                     var appointment = await _context.Appointments.FindAsync(new object[] { request.Id }, cancellationToken: cancellationToken);
 
-                    if (appointment is null) return null;
+                    if (appointment is null) return Result<Unit>.Failure("Appointment not found");
 
                     appointment.IsCancelled = true;
 

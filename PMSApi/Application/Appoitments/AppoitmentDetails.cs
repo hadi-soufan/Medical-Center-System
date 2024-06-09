@@ -22,8 +22,16 @@ namespace Application.Appointments
         /// <summary>
         /// Handler to process the AppointmentDetails query.
         /// </summary>
-        public class Handler(ApplicationDbContext context) : IRequestHandler<Query, Result<AppointmentDto>>
+        public class Handler : IRequestHandler<Query, Result<AppointmentDto>>
         {
+            private readonly IApplicationDbContext _context;
+
+            public Handler(IApplicationDbContext context)
+            {
+                _context = context;
+            }
+
+
             /// <summary>
             /// Handles the AppointmentDetails query.
             /// </summary>
@@ -34,7 +42,7 @@ namespace Application.Appointments
             {
                 try
                 {
-                    var appointment = await context.Appointments
+                    var appointment = await _context.Appointments
                     .Include(a => a.Patient)
                     .Select(a => new AppointmentDto
                     {

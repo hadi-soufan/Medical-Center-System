@@ -22,8 +22,16 @@ namespace Application.Appointments
         /// <summary>
         /// Handler to process the query and return a list of appointments.
         /// </summary>
-        public class Handler(ApplicationDbContext context, IMapper mapper) : IRequestHandler<Query, Result<List<AppointmentDto>>>
+        public class Handler : IRequestHandler<Query, Result<List<AppointmentDto>>>
         {
+            private readonly IApplicationDbContext _context;
+            private readonly IMapper _mapper;
+
+            public Handler(IApplicationDbContext context, IMapper mapper)
+            {
+                _context = context;
+                _mapper = mapper;
+            }
             /// <summary>
             /// Handles the query to retrieve a list of appointments.
             /// </summary>
@@ -34,11 +42,11 @@ namespace Application.Appointments
             {
                 try
                 {
-                    var appointments = await context.Appointments
+                    var appointments = await _context.Appointments
                     .Include(a => a.Patient)
                     .Include(a => a.Doctor)
                     .Where(a => !a.IsCancelled)
-                    .ProjectTo<AppointmentDto>(mapper.ConfigurationProvider)
+                    .ProjectTo<AppointmentDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
 
                     return Result<List<AppointmentDto>>.Success(appointments);

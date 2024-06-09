@@ -1,4 +1,5 @@
-﻿using Application.Core;
+﻿using Application.Appoitments;
+using Application.Core;
 using Application.Interfaces;
 using Domain.Entities;
 using MediatR;
@@ -25,13 +26,15 @@ namespace Application.Appointments
         /// </summary>
         public class Handler : IRequestHandler<Command, Result<Unit>>
         {
-            private readonly ApplicationDbContext _context;
+            private readonly IApplicationDbContext _context;
             private readonly IAppointmentUpdateSender _appointmentUpdateSender;
+            private readonly AppointmentValidator _validator;
 
-            public Handler(ApplicationDbContext context, IAppointmentUpdateSender appointmentUpdateSender)
+            public Handler(IApplicationDbContext context, IAppointmentUpdateSender appointmentUpdateSender, AppointmentValidator validator)
             {
                 _context = context;
                 _appointmentUpdateSender = appointmentUpdateSender;
+                _validator = validator;
             }
 
             /// <summary>
@@ -55,6 +58,12 @@ namespace Application.Appointments
                     appointment.Notes = request.Appointment.Notes;
 
                     appointment.UpdatedAt = DateOnly.FromDateTime(DateTime.Now);
+
+                    var validationResult = _validator.Validate(request.Appointment);
+                    if (!validationResult.IsValid)
+                    {
+                        return Result<Unit>.Failure(string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
+                    }
 
                     var result = await _context.SaveChangesAsync(cancellationToken) > 0;
 

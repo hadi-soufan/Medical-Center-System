@@ -1,4 +1,6 @@
 ﻿
+using System.Diagnostics;
+
 public interface IUserAccessor
 {
     /// <summary>

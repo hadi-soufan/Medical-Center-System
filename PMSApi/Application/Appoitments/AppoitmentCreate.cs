@@ -40,10 +40,10 @@ namespace Application.Appointments
         /// </summary>
         public class Handler : IRequestHandler<Command, Result<Unit>>
         {
-            private readonly ApplicationDbContext _context;
+            private readonly IApplicationDbContext _context;
             private readonly IAppointmentUpdateSender _appointmentUpdateSender;
 
-            public Handler(ApplicationDbContext context, IAppointmentUpdateSender appointmentUpdateSender)
+            public Handler(IApplicationDbContext context, IAppointmentUpdateSender appointmentUpdateSender)
             {
                 _context = context;
                 _appointmentUpdateSender = appointmentUpdateSender;
