@@ -9,7 +9,7 @@ namespace Application.Profile
 {
     public class ProfileDto
     {
-        public Guid UserId { get; set; }
+        public string Username { get; set; }
         [StringLength(150)]
         public string DisplayName { get; set; }
 
