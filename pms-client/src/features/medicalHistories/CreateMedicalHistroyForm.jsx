@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from "react";
-import "devextreme-react/text-area";
+import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import {
   Form,
   GroupItem,
@@ -10,16 +10,14 @@ import {
   TabPanelOptions,
   Tab,
 } from "devextreme-react/form";
-import { useDispatch } from "react-redux";
-import { createMedicalHistory } from "../../api/stores/medicalHistory/medicalHistoryStore";
 import LabelTemplate from "../../ui/LabelTemplate";
 import { fetchPatientNames } from "../../utils/fetchPatientNames";
+import {
+  createMedicalHistory
+} from "../../api/stores/medicalHistory/medicalHistoryStore";
 
-function CreateMedicalHistroyForm() {
+function CreateMedicalHistroyForm({ onCreateMedicalHistory }) {
   const dispatch = useDispatch();
-
-  const [phones, setPhones] = useState([]);
-  const [isHomeAddressVisible, setIsHomeAddressVisible] = useState(true);
 
   const [height, setHeight] = useState("");
   const [weight, setWeight] = useState("");
@@ -47,9 +45,9 @@ function CreateMedicalHistroyForm() {
     width: "120px",
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({
+    const newMedicalHistory = {
       height,
       weight,
       medicalProblems,
@@ -63,46 +61,10 @@ function CreateMedicalHistroyForm() {
       treatmenPlans,
       familyMedicalHistory,
       patientId: selectedPatientId,
-    });
-    dispatch(
-      createMedicalHistory({
-        height,
-        weight,
-        medicalProblems,
-        mentalHealthProblems,
-        medicines,
-        allergics,
-        sugreriesHistory,
-        vaccines,
-        diagnosis,
-        testsPerformed,
-        treatmenPlans,
-        familyMedicalHistory,
-        patientId: selectedPatientId,
-      })
-    );
+    };
+    await dispatch(createMedicalHistory(newMedicalHistory));
+    onCreateMedicalHistory(newMedicalHistory);
   };
-
-  //   const handleSubmit = (e) => {
-  //     e.preventDefault();
-  //     dispatch(
-  //       createMedicalHistory({
-  //         height,
-  //         weight,
-  //         medicalProblems,
-  //         mentalHealthProblems,
-  //         medicines,
-  //         allergics,
-  //         sugreriesHistory,
-  //         vaccines,
-  //         diagnosis,
-  //         testsPerformed,
-  //         treatmenPlans,
-  //         familyMedicalHistory,
-  //         patientId: selectedPatientId,
-  //       })
-  //     );
-  //   };
 
   return (
     <>
@@ -110,7 +72,6 @@ function CreateMedicalHistroyForm() {
         <Form colCount={2}>
           <GroupItem>
             <GroupItem caption="Personal Data">
-              {/** Patient Name*/}
               <SimpleItem
                 dataField="PatientName"
                 editorType="dxSelectBox"
@@ -125,7 +86,6 @@ function CreateMedicalHistroyForm() {
                 <Label render={LabelTemplate("info")} />
               </SimpleItem>
 
-              {/** Patient Height*/}
               <SimpleItem
                 dataField="Height - CM"
                 id="height"
@@ -137,7 +97,6 @@ function CreateMedicalHistroyForm() {
                 <Label render={LabelTemplate("like")} />
               </SimpleItem>
 
-              {/** Patient Weight*/}
               <SimpleItem
                 dataField="Weight - KG"
                 id="weight"
@@ -149,7 +108,6 @@ function CreateMedicalHistroyForm() {
                 <Label render={LabelTemplate("like")} />
               </SimpleItem>
 
-              {/** Patient Medical Problems*/}
               <SimpleItem
                 dataField="Medical Problems"
                 id="medicalProblems"
@@ -161,7 +119,6 @@ function CreateMedicalHistroyForm() {
                 <Label render={LabelTemplate("clearsquare")} />
               </SimpleItem>
 
-              {/** Patient Mental Health Problems*/}
               <SimpleItem
                 dataField="Mental Health Problems"
                 id="mentalHealthProblems"
@@ -177,7 +134,6 @@ function CreateMedicalHistroyForm() {
 
           <GroupItem>
             <GroupItem caption="Medications">
-              {/** Patient Medicines*/}
               <SimpleItem
                 dataField="Medicines"
                 id="medicines"
@@ -188,7 +144,6 @@ function CreateMedicalHistroyForm() {
               >
                 <Label render={LabelTemplate("fill")} />
               </SimpleItem>
-              {/** Patient Allergics*/}
               <SimpleItem
                 dataField="Allergics"
                 id="allergics"
@@ -199,7 +154,6 @@ function CreateMedicalHistroyForm() {
               >
                 <Label render={LabelTemplate("fill")} />
               </SimpleItem>
-              {/** Patient Sugreries History*/}
               <SimpleItem
                 dataField="Sugreries History"
                 id="sugreriesHistory"
@@ -210,7 +164,6 @@ function CreateMedicalHistroyForm() {
               >
                 <Label render={LabelTemplate("cut")} />
               </SimpleItem>
-              {/** Patient Vaccines*/}
               <SimpleItem
                 dataField="Vaccines"
                 id="vaccines"
@@ -221,7 +174,6 @@ function CreateMedicalHistroyForm() {
               >
                 <Label render={LabelTemplate("clearsquare")} />
               </SimpleItem>
-              {/** Patient Diagnosis*/}
               <SimpleItem
                 dataField="Diagnosis"
                 id="diagnosis"
@@ -240,7 +192,6 @@ function CreateMedicalHistroyForm() {
               <TabbedItem>
                 <TabPanelOptions deferRendering={false} />
 
-                {/** Patient Tests Performed*/}
                 <Tab title="Tests Performed">
                   <SimpleItem
                     dataField="Tests Performed"
@@ -255,7 +206,6 @@ function CreateMedicalHistroyForm() {
                   </SimpleItem>
                 </Tab>
 
-                {/** Patient Treatmen Plans*/}
                 <Tab title="Treatmen Plans">
                   <SimpleItem
                     dataField="Treatmen Plans"
@@ -270,7 +220,6 @@ function CreateMedicalHistroyForm() {
                   </SimpleItem>
                 </Tab>
 
-                {/** Patient Family Medical History*/}
                 <Tab title="Family Medical History">
                   <SimpleItem
                     dataField="Family Medical History"

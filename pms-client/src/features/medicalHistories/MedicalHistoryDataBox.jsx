@@ -1,21 +1,12 @@
 import React, { useState } from "react";
-import {
-  HiMiniBeaker,
-} from "react-icons/hi2";
+import { HiMiniBeaker } from "react-icons/hi2";
 import styled from "styled-components";
 import { format, isToday } from "date-fns";
-import { formatDistanceFromNow, formatCurrency } from "../../utils/helpers";
-import Form from "../../ui/Form";
-import Input from "../../ui/Input";
-import FileInput from "../../ui/FileInput";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  updateMedicalHistory,
-} from "../../api/stores/medicalHistory/medicalHistoryStore";
-import Button from "../../ui/Button";
+import { formatDistanceFromNow } from "../../utils/helpers";
+import { useDispatch } from "react-redux";
+import { updateMedicalHistory } from "../../api/stores/medicalHistory/medicalHistoryStore";
 import MedicalHistoryForm from "./MedicalHistoryForm";
 import MedicalHistoryFileManagement from "./MedicalHistoryFileManagement";
-import Leb from '../../assets/img/Flags/Lebanon.png'
 
 const StyledBookingDataBox = styled.section`
   /* Box */
@@ -73,7 +64,7 @@ const Guest = styled.div`
   }
 
   & img {
-    width: 24px;  // Set the flag image size as required
+    width: 24px;
     height: 16px;
   }
 `;
@@ -96,9 +87,10 @@ const TabButton = styled.button`
   font-size: 1.4rem;
   font-weight: 500;
   text-align: center;
-  background-color: ${(props) =>
-    props.isActive ? "var(--color-brand-200)" : "var(--color-grey-100)"};
-  color: ${(props) => (props.isActive ? "var(--color-brand-500)" : "var(--color-grey-700)")};
+  background-color: ${({ isActive }) =>
+    isActive ? "var(--color-brand-200)" : "var(--color-grey-100)"};
+  color: ${({ isActive }) =>
+    isActive ? "var(--color-brand-500)" : "var(--color-grey-700)"};
   border: none;
   cursor: pointer;
 
@@ -128,7 +120,7 @@ function MedicalHistoryDataBox({ medicalHistoryData }) {
     testsPerformed: medicalHistoryData.testsPerformed,
     treatmenPlans: medicalHistoryData.treatmenPlans,
     familyMedicalHistory: medicalHistoryData.familyMedicalHistory,
-    patientId: medicalHistoryData.patientId
+    patientId: medicalHistoryData.patientId,
   });
 
   const handleInputChange = (e) => {
@@ -141,11 +133,14 @@ function MedicalHistoryDataBox({ medicalHistoryData }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(updateMedicalHistory(medicalHistoryData.medicalHistoryId, formData));
-    console.log("formData: ", formData);
+    dispatch(
+      updateMedicalHistory(medicalHistoryData.medicalHistoryId, formData)
+    );
   };
 
-console.log(medicalHistoryData.patient.userId);
+  const getFlagImagePath = (nationality) => {
+    return `/Flags/${nationality}.png`;
+  };
 
   return (
     <StyledBookingDataBox>
@@ -167,14 +162,12 @@ console.log(medicalHistoryData.patient.userId);
           )
         </p>
       </Header>
-
-      
-
-     
-
       <Section>
         <Guest>
-        <img src={Leb} alt={`${medicalHistoryData.patient.user.nationality} flag`} />
+          <img
+            src={getFlagImagePath(medicalHistoryData.patient.user.nationality)}
+            alt={`${medicalHistoryData.patient.user.nationality} flag`}
+          />
           <p>{medicalHistoryData.patient.user.displayName}</p>
           <span>&bull;</span>
           <p>{medicalHistoryData.patient.user.email}</p>
@@ -185,43 +178,38 @@ console.log(medicalHistoryData.patient.userId);
         </Guest>
 
         <TabContainer>
-        <TabButton
-          isActive={activeTab === "medicalHistory"}
-          onClick={() => handleTabChange("medicalHistory")}
-        >
-          Patient History
-        </TabButton>
-        <TabButton
-          isActive={activeTab === "tests"}
-          onClick={() => handleTabChange("tests")}
-        >
-          Patient Tests
-        </TabButton>
+          <TabButton
+            $isActive={activeTab === "medicalHistory"}
+            onClick={() => handleTabChange("medicalHistory")}
+          >
+            Patient History
+          </TabButton>
+          <TabButton
+            $isActive={activeTab === "tests"}
+            onClick={() => handleTabChange("tests")}
+          >
+            Patient Tests
+          </TabButton>
 
-        <TabButton
-          isActive={activeTab === "files"}
-          onClick={() => handleTabChange("files")}
-        >
-          Patient Files
-        </TabButton>
-      </TabContainer>
+          <TabButton
+            $isActive={activeTab === "files"}
+            onClick={() => handleTabChange("files")}
+          >
+            Patient Files
+          </TabButton>
+        </TabContainer>
 
         {activeTab === "medicalHistory" && (
           <MedicalHistoryForm
-          formData={formData}
-          handleInputChange={handleInputChange}
-          handleSubmit={handleSubmit}
-        />
-      )}
+            formData={formData}
+            handleInputChange={handleInputChange}
+            handleSubmit={handleSubmit}
+          />
+        )}
 
-      {activeTab === "tests" && (
-          <p>tests</p>
-      )}
+        {activeTab === "tests" && <p>tests</p>}
 
-      {activeTab === "files" && (
-          <MedicalHistoryFileManagement />
-      )}
-        
+        {activeTab === "files" && <MedicalHistoryFileManagement />}
       </Section>
 
       <Footer>

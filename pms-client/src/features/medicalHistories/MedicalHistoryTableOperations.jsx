@@ -6,7 +6,7 @@ function MedicalHistoryTableOperations() {
   return (
     <>
          <TableOperations>
-            <Filter />
+            {/* <Filter /> */}
         </TableOperations>
     </>
   )

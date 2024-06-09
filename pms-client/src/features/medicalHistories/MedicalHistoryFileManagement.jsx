@@ -3,23 +3,42 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import FileInput from '../../ui/FileInput';
 import Button from '../../ui/Button';
-import Spinner from '../../ui/Spinner';
-
+import MiniSpinner from '../../ui/SpinnerMini';
 
 function MedicalHistoryFileManagement() {
   const [photos, setPhotos] = useState([]);
-  const [file, setFile] = useState(null); // State to hold the uploaded file
+  const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
-  const { userId } = useParams();
+  const [userId, setUserId] = useState(null);
+  const { id } = useParams(); 
+
+  useEffect(() => {
+    async function fetchMedicalHistory() {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/medicalhistory/${id}`);
+        if (response.status === 200) {
+          const medicalHistory = response.data;
+          setUserId(medicalHistory.patient.userId);
+        } else {
+          throw new Error('Failed to fetch medical history with status: ' + response.status);
+        }
+      } catch (error) {
+        console.error("Failed to fetch medical history:", error);
+      }
+    }
+
+    fetchMedicalHistory();
+  }, [id]);
 
   useEffect(() => {
     async function fetchPhotos() {
+      if (!userId) return; 
       try {
-        const response = await axios.get(`http://localhost:5000/api/photo/user/cc792d13-3681-494f-934a-15e34524454f`);
+        const response = await axios.get(`http://localhost:5000/api/photo/user/${userId}`);
         if (response.status === 200) {
           setPhotos(response.data.$values);
         } else {
-          throw new Error('Failed to fetch with status: ' + response.status);
+          throw new Error('Failed to fetch photos with status: ' + response.status);
         }
       } catch (error) {
         console.error("Failed to fetch photos:", error);
@@ -27,18 +46,18 @@ function MedicalHistoryFileManagement() {
     }
 
     fetchPhotos();
-  }, []);
+  }, [userId]);
 
   const handleFileChange = (event) => {
-    setFile(event.target.files[0]); // Set the file to the file chosen by the file input
+    setFile(event.target.files[0]);
   };
 
   const handleUpload = async () => {
-    if (!file) return; // If no file is selected, return early
+    if (!file || !userId) return;
 
     const formData = new FormData();
     formData.append('File', file);
-    formData.append('UserId', 'cc792d13-3681-494f-934a-15e34524454f'); // Assume a fixed user ID or manage via state/context
+    formData.append('UserId', userId);
 
     setUploading(true);
 
@@ -52,7 +71,7 @@ function MedicalHistoryFileManagement() {
       setUploading(false);
 
       if (response.data.success) {
-        setPhotos(prevPhotos => [...prevPhotos, response.data.photo]); // Assuming the API returns the added photo
+        setPhotos(prevPhotos => [...prevPhotos, response.data.photo]);
       } else {
         throw new Error('Upload failed');
       }
@@ -67,7 +86,7 @@ function MedicalHistoryFileManagement() {
       <h2>User Photos</h2>
       <FileInput id="image" accept="image/*" type="file" onChange={handleFileChange} />
       <Button onClick={handleUpload} disabled={uploading}>
-        {uploading ? 'Uploading' : 'Upload Photo'}
+        {uploading ? <MiniSpinner /> : 'Upload Photo'}
       </Button>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
         {photos.map((photo, index) => (
@@ -82,7 +101,6 @@ function MedicalHistoryFileManagement() {
         ))}
       </div>
     </div>
-
   );
 }
 

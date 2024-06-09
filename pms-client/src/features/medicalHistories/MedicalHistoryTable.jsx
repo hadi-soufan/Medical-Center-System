@@ -12,7 +12,7 @@ function MedicalHistoryTable({medicalHistories, handleDeleteMedicalHistory, isDe
         <Table.Header>
           <div>Patient Name</div>
           <div>Height - Weight</div>
-          <div>Tests Performed</div>
+          <div>Allergics</div>
           <div>Diagnosis</div>
           <div>Problems</div>
           <div>Actions</div>

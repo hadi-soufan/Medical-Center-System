@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Table from "../../ui/Table";
 import Modal from "../../ui/Modal";
 import Button from "../../ui/Button";
@@ -27,6 +27,18 @@ const Problem = styled.div`
   text-transform: uppercase;
   font-size: 1.2rem;
   font-weight: 600;
+  ${({ isAllergic }) =>
+    isAllergic &&
+    css`
+      background-color: var(--color-warning);
+      color: var(--color-red-100);
+    `}
+  ${({ isDiagnosis }) =>
+    isDiagnosis &&
+    css`
+      background-color: #5bc0de;
+      color: var(--color-red-100);
+    `}
 `;
 
 function MedicalHistoryRow({
@@ -41,8 +53,12 @@ function MedicalHistoryRow({
         <MedicalHistory>
           {medicalHistory.height} cm - {medicalHistory.weight} kg
         </MedicalHistory>
-        <MedicalHistory>{medicalHistory.testsPerformed}</MedicalHistory>
-        <MedicalHistory>{medicalHistory.diagnosis}</MedicalHistory>
+        <Problem isAllergic={true}>
+          <MedicalHistory>{medicalHistory.allergics}</MedicalHistory>
+        </Problem>
+        <Problem isDiagnosis={true}>
+          <MedicalHistory>{medicalHistory.diagnosis}</MedicalHistory>
+        </Problem>
         <MedicalHistory>
           <Problem>
             {medicalHistory.medicalProblems} &{" "}
@@ -63,7 +79,7 @@ function MedicalHistoryRow({
             </Button>
 
             <Modal.Open opens="delete-medical-history">
-              <Button>
+              <Button variation='danger'>
                 <HiTrash />
               </Button>
             </Modal.Open>
