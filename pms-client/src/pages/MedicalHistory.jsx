@@ -9,7 +9,6 @@ import Heading from "../ui/Heading";
 import Row from "../ui/Row";
 import MedicalHistoryTable from "../features/medicalHistories/MedicalHistoryTable";
 import MedicalHistoryTableOperations from "../features/medicalHistories/MedicalHistoryTableOperations";
-import Button from "../ui/Button";
 import styled from "styled-components";
 import CreateMedicalHistroyForm from "../features/medicalHistories/CreateMedicalHistroyForm";
 
@@ -51,6 +50,11 @@ function MedicalHistory() {
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
+  };
+
+  const handleCreateMedicalHistory = (newMedicalHistory) => {
+    dispatch(getMedicalHistories());
+    setActiveTab("table");
   };
 
   if (isLoading) return <Spinner />;
@@ -97,7 +101,7 @@ function MedicalHistory() {
 
       {activeTab === "createForm" && (
         <Row>
-          <CreateMedicalHistroyForm />
+          <CreateMedicalHistroyForm onCreateMedicalHistory={handleCreateMedicalHistory} />
         </Row>
       )}
     </>

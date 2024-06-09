@@ -21,6 +21,7 @@ function Patients() {
 
   if (isLoading) return <Spinner />;
 
+
   return (
     <>
       <Row type="horizontal">

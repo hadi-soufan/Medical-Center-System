@@ -12,6 +12,7 @@ import {
   getDoctorDetails
 } from "../api/stores/doctor/doctorStore";
 import {connect} from 'react-redux';
+import { useSearchParams } from "react-router-dom";
 
 
 /**
@@ -20,14 +21,15 @@ import {connect} from 'react-redux';
  * @returns {JSX.Element} The Doctors page component.
  */
 function Doctors() {
- 
   const dispatch = useDispatch();
+  const [searchParams] = useSearchParams();
+  const currentPage = Number(searchParams.get("page")) || 1;
+  const pageSize = Number(searchParams.get("pageSize")) || 10;
   const doctors = useSelector(state => state.doctors.doctors);
-  const isLoading = useSelector(state => state.doctors.isLoading);
-
+  const isLoading = useSelector(state => state.doctors.isLoading);  
   useEffect(() => {
-    dispatch(fetchDoctors());
-  }, [dispatch]);
+    dispatch(fetchDoctors(currentPage, pageSize));
+  }, [dispatch, currentPage, pageSize]);
 
 
   if (isLoading) return <Spinner />;
