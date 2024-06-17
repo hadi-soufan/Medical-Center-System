@@ -19,6 +19,7 @@ namespace Persistence
         public DbSet<Accountant> Accountants { get; set; }
         public DbSet<PatientPhoto> PatientPhotos { get; set; }
 
+
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);

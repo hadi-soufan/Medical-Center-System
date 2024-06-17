@@ -43,7 +43,6 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
             var user = await _userManager.FindByNameAsync(User.FindFirstValue(ClaimTypes.Name));
-
             return CreateUserObject(user);
         }
 
@@ -59,7 +58,7 @@ namespace API.Controllers
 
             var result = await _userManager.CheckPasswordAsync(user, loginDto.Password);
 
-            if(result)
+            if (result)
             {
                 return CreateUserObject(user);
             }
@@ -71,7 +70,7 @@ namespace API.Controllers
         // POST: /api/account/register
         [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
+        public async Task<IActionResult> Register(RegisterDto registerDto)
         {
             if (await _userManager.Users.AnyAsync(x => x.UserName == registerDto.Username))
             {
@@ -121,7 +120,7 @@ namespace API.Controllers
                         UserId = user.Id
                     };
 
-                     _context.Doctors.Add(doctor);
+                    _context.Doctors.Add(doctor);
                     await _userManager.AddToRoleAsync(user, "Doctor");
                 }
                 else if (registerDto.Role == "Patient")
@@ -180,12 +179,9 @@ namespace API.Controllers
                     await _userManager.AddToRoleAsync(user, "Accountant");
                 }
 
-
-                
-
                 await _context.SaveChangesAsync();
 
-                return CreateUserObject(user);
+                return Ok("User registered successfully");
             }
 
             return BadRequest(result.Errors);
@@ -219,7 +215,5 @@ namespace API.Controllers
                 Role = user.Role
             };
         }
-
-        
     }
 }

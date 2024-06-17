@@ -55,6 +55,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapHub<AppointmentHub>("/appointmenthub");
+app.MapHub<NotificationHub>("/notificationHub");
 
 using (var scope = app.Services.CreateScope())
 {

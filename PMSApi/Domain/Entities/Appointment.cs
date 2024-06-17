@@ -31,6 +31,7 @@ namespace Domain.Entities
         public DateOnly CreatedAt { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
         public DateOnly UpdatedAt { get; set; }
         public bool IsCancelled { get; set; } = false;
+        public bool IsConfirmed { get; set; } = false;
         public Guid PatientId { get; set; }
 
         [ForeignKey("PatientId")]

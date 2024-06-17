@@ -54,6 +54,9 @@ namespace API.Extensions
             services.AddScoped<IPhotoAccessor, PhotoAccessor>();
             services.AddScoped<IUserAccessor, UserAccessor>();
             services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddHostedService<EmailSchedulerService>();
+            services.AddScoped<INotificationService, NotificationService>();
 
 
             return services;

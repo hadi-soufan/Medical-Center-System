@@ -6,6 +6,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using System.Net.Mail;
 
 namespace Application.Appointments
 {
@@ -42,11 +43,13 @@ namespace Application.Appointments
         {
             private readonly IApplicationDbContext _context;
             private readonly IAppointmentUpdateSender _appointmentUpdateSender;
+            private readonly IEmailService _emailService;
 
-            public Handler(IApplicationDbContext context, IAppointmentUpdateSender appointmentUpdateSender)
+            public Handler(IApplicationDbContext context, IAppointmentUpdateSender appointmentUpdateSender, IEmailService emailService)
             {
                 _context = context;
                 _appointmentUpdateSender = appointmentUpdateSender;
+                _emailService = emailService;
             }
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
@@ -79,7 +82,18 @@ namespace Application.Appointments
 
                     await _appointmentUpdateSender.SendAppointmentUpdate("New appointment created");
 
+                    var emailSubject = "Your Appointment is Set";
+                    var appointmentDate = request.Appointment.AppointmentDateStart.ToString("MM/dd/yyyy 'at' hh:mm:ss tt");
+                    var emailBody = $"Dear {patient.User.DisplayName},<br/><br/>Your appointment with Dr. {doctor.User.DisplayName} is set for {appointmentDate}.<br/><br/>Thank you.";
+                    await _emailService.SendEmailAsync(user.Email, emailSubject, emailBody);
+
+
                     return Result<Unit>.Success(Unit.Value);
+                }
+                catch (SmtpException smtpEx)
+                {
+                    // Log and handle SMTP-specific errors
+                    return Result<Unit>.Failure($"Email sending failed: {smtpEx.Message}");
                 }
                 catch (Exception ex)
                 {

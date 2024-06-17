@@ -1,27 +1,27 @@
-version: '3.8'
+# version: '3.8'
 
-services:
-  api:
-    build:
-      context: ..
-      dockerfile: API/Dockerfile
-    environment:
-      - ConnectionStrings__DefaultConnection=Server=postgres;Port=5432;Database=PMS;User Id=hatan;Password=rfayum159;
-    ports:
-      - "5000:8080"
-    depends_on:
-      - postgres    
+# services:
+#   api:
+#     build:
+#       context: ..
+#       dockerfile: API/Dockerfile
+#     environment:
+#       - ConnectionStrings__DefaultConnection=Server=postgres;Port=5432;Database=PMS;User Id=hatan;Password=rfayum159;
+#     ports:
+#       - "5000:8080"
+#     depends_on:
+#       - postgres    
 
-  postgres:
-    image: postgres:13
-    environment:
-      POSTGRES_USER: hatan
-      POSTGRES_PASSWORD: rfayum159
-      POSTGRES_DB: PMS
-    ports:
-      - "15432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+#   postgres:
+#     image: postgres:13
+#     environment:
+#       POSTGRES_USER: hatan
+#       POSTGRES_PASSWORD: rfayum159
+#       POSTGRES_DB: PMS
+#     ports:
+#       - "15432:5432"
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
 
-volumes:
-  postgres_data:
+# volumes:
+#   postgres_data:
