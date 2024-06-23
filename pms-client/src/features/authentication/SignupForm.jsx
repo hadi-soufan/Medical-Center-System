@@ -53,7 +53,7 @@ function SignupForm() {
     const userData = {
       email,
       username,
-      password: "Pa$$w0rd", // Default password
+      password: "Pa$$w0rd", 
       phoneNumber,
       displayName,
       fatherName,
@@ -63,7 +63,7 @@ function SignupForm() {
       education,
       gender,
       maritalStatus,
-      bloodType: "A+", // Default blood type
+      bloodType: "A+", 
       address,
       city,
       zipCode,

@@ -13,7 +13,6 @@ function AppointmentsScheduler({ appointments }) {
       return null;
     }
 
-    // Adjust start date by adding 3 hours
     const adjustedStartDate = new Date(new Date(appointment.appointmentDateStart).setHours(new Date(appointment.appointmentDateStart).getHours() + 3));
     const endDate = appointment.appointmentDateEnd ? new Date(appointment.appointmentDateEnd) : new Date(adjustedStartDate);
 

@@ -32,10 +32,6 @@ function PatientTable({patients}) {
                   medicalHistory: patient?.user?.patients?.$values[0]?.medicalHistory?.medicalHistoryId,
                   diagnosis: patient?.user?.patients?.$values[0]?.medicalHistory?.diagnosis || "N/A"
                 }}
-            //   handleDeleteDoctor={handleDeleteDoctor}
-            //   isDeleting={isDeleting}
-            //   setIsDeleting={setIsDeleting}
-            //   getDoctorDetails={getDoctorDetails}
             />
           )
         )}

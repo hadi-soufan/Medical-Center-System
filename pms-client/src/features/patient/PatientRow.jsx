@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import Button from "../../ui/Button";
 import Modal from "../../ui/Modal";
 import { HiTrash, HiEye } from "react-icons/hi2";
-import ConfirmDelete from "../../ui/ConfirmDelete";
 
 const Patient = styled.div`
   font-size: 1.6rem;
@@ -37,18 +36,14 @@ function PatientRow({ patient }) {
           <Modal.Open opens='patient-details'>
             <Button
               onClick={async () => {
-                // const doctorDetails = await getDoctorDetails(doctor.doctorId);
-                // console.log('doctorDetails', doctorDetails);  
               }}
             >
               <HiEye />
             </Button>
           </Modal.Open>
           <Modal.Window name='patient-details'>
-            {/* <DoctorDetails doctorDetails={doctorDetails} /> */}
           </Modal.Window>
 
-          {/* <UpdateDoctor doctorData={doctor} handleUpdate={handleUpdate} /> */}
 
           <Modal.Open opens="delete-patient">
             <Button variation="danger">
@@ -56,13 +51,7 @@ function PatientRow({ patient }) {
             </Button>
           </Modal.Open>
           <Modal.Window name="delete-patient">
-            {/* <ConfirmDelete
-              resourceName={doctor.displayName}
-              disabled={isDeleting}
-              onConfirm={() => {
-                handleDeleteDoctor(doctor.doctorId);
-              }}
-            /> */}
+            
           </Modal.Window>
         </Modal>
       </div>

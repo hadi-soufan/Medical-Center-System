@@ -74,4 +74,3 @@ export const registerUser = (userDetails) => async (dispatch) => {
     toast.error(`${errorMessage}`);
   }
 };
-
