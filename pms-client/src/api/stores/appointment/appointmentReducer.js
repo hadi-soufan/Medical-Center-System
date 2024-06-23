@@ -1,6 +1,5 @@
 import * as appointmentActions from "./appointmentActionsTypes";
 
-// Initial state
 const initialState = {
   appointments: [],
   appointmentDetails: null,
@@ -9,7 +8,6 @@ const initialState = {
   success: null,
 };
 
-// Reducer
 export default function appointmentReducer(state = initialState, action) {
   switch (action.type) {
     case appointmentActions.GET_ALL_APPOINTMENTS_SUCCESS:

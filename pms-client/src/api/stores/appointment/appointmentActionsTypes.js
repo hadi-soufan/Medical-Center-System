@@ -1,4 +1,3 @@
-// action types
 export const DELETE_APPOINTMENT = "DELETE_APPOINTMENT";
 export const SET_LOADING = "SET_LOADING";
 export const SET_ERROR = "SET_ERROR";

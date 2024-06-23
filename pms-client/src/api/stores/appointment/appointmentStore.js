@@ -10,7 +10,7 @@ export const createAppointment = (appointmentData) => async (dispatch) => {
       type: appointmentActions.CREATE_APPOINTMENT_SUCCESS,
       payload: response.data,
     });
-    toast.success("Appointment created successfully!");
+    toast.success("Appointment created successfully! An email notification has been sent.");
     dispatch({
       type: appointmentActions.SET_SUCCESS,
       payload: "Appointment created successfully!",
