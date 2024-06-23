@@ -10,7 +10,10 @@ import {
 
 function Stats({ doctorsCount, patientsCount, appointmentsCount, medicalHistoriesCount }) {
 
-
+  const centersCount = 5;
+  const nurses = 5;
+  const buildingsCount = 12;
+  const departmentsCount = 8;
   return (
     <>
       <Stat
@@ -36,6 +39,30 @@ function Stats({ doctorsCount, patientsCount, appointmentsCount, medicalHistorie
         color="yellow"
         icon={<HiOutlineBookOpen />}
         value={medicalHistoriesCount}
+      />
+      <Stat
+        title="Centers"
+        color="yellow"
+        icon={<HiOutlineBookOpen />}
+        value={centersCount}
+      />
+      <Stat
+        title="Buildings"
+        color="yellow"
+        icon={<HiOutlineBookOpen />}
+        value={buildingsCount}
+      />
+      <Stat
+        title="Nurses"
+        color="yellow"
+        icon={<HiOutlineBookOpen />}
+        value={nurses}
+      />
+      <Stat
+        title="Departments"
+        color="yellow"
+        icon={<HiOutlineBookOpen />}
+        value={departmentsCount}
       />
     </>
   );

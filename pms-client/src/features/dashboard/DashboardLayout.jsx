@@ -4,13 +4,13 @@ import Stats from "./Stats";
 import { useSelector } from "react-redux";
 import AppointmentsChart from "./AppointmentsChart";
 import DurationChart from "./DurationChart";
-import TodayItem from "./TodayItem";
+import TodayActivity from "./TodayActivity";
 
 
 const StyledDashboardLayout = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-template-rows: auto auto auto;
+  grid-template-rows: auto auto auto auto;
   gap: 2.4rem;
 `;
 
@@ -31,8 +31,8 @@ function DashboardLayout() {
         appointmentsCount={appointmentsCount}
         medicalHistoriesCount={medicalHistoriesCount}
       />
+      <TodayActivity />
        <DurationChart/>
-       {/* <TodayItem /> */}
       <AppointmentsChart/>
     </StyledDashboardLayout>
   );

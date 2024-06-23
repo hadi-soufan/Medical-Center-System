@@ -125,7 +125,6 @@ const fakeData = [
   { patientId: 8, test: "Biopsy" },
   { patientId: 9, test: "Blood Test" },
   { patientId: 10, test: "X-Ray" },
-  // Add more fake data as needed
 ];
 
 function prepareData(startData, tests) {

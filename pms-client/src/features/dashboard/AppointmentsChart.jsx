@@ -1,4 +1,3 @@
-// AppointmentsChart.js
 import React from "react";
 import styled from "styled-components";
 import DashboardBox from "./DashboardBox";
@@ -43,14 +42,16 @@ function AppointmentsChart() {
   const appointments = useSelector((state) => state.appointments.appointments);
 
   const chartData = appointments.reduce((acc, appointment) => {
-    const date = appointment.appointmentDateStart.split("T")[0];
-    if (!acc[date]) {
-      acc[date] = { date, virtual: 0, onsite: 0 };
-    }
-    if (appointment.appointmentType === "Virtual") {
-      acc[date].virtual += 1;
-    } else if (appointment.appointmentType === "On Site") {
-      acc[date].onsite += 1;
+    if (appointment && appointment.appointmentDateStart) {
+      const date = appointment.appointmentDateStart.split("T")[0];
+      if (!acc[date]) {
+        acc[date] = { date, virtual: 0, onsite: 0 };
+      }
+      if (appointment.appointmentType === "Virtual") {
+        acc[date].virtual += 1;
+      } else if (appointment.appointmentType === "On Site") {
+        acc[date].onsite += 1;
+      }
     }
     return acc;
   }, {});
