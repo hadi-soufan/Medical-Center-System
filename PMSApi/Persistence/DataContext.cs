@@ -18,6 +18,11 @@ namespace Persistence
         public DbSet<Nurse> Nurses { get; set; }
         public DbSet<Accountant> Accountants { get; set; }
         public DbSet<PatientPhoto> PatientPhotos { get; set; }
+        public DbSet<Center> Centers { get; set; }
+        public DbSet<Building> Buildings { get; set; }
+        public DbSet<Department> Departments { get; set; }
+        public DbSet<Floor> Floors { get; set; }
+        public DbSet<Room> Rooms { get; set; }
 
 
         public ApplicationDbContext(DbContextOptions options) : base(options)
@@ -54,6 +59,30 @@ namespace Persistence
               .WithOne()
               .HasForeignKey<Accountant>(a => a.UserId)
               .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Center>()
+                .HasMany(c => c.Buildings)
+                .WithOne(b => b.Center)
+                .HasForeignKey(b => b.CenterId)
+                .IsRequired();
+
+            modelBuilder.Entity<Building>()
+                .HasMany(b => b.Departments)
+                .WithOne(d => d.Building)
+                .HasForeignKey(d => d.BuildingId)
+                .IsRequired();
+
+            modelBuilder.Entity<Department>()
+                .HasMany(d => d.Floors)
+                .WithOne(f => f.Department)
+                .HasForeignKey(f => f.DepartmentId)
+                .IsRequired();
+
+            modelBuilder.Entity<Floor>()
+                .HasMany(f => f.Rooms)
+                .WithOne(r => r.Floor)
+                .HasForeignKey(r => r.FloorId)
+                .IsRequired();
         }
 
 
