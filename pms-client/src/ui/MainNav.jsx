@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
-import { HiOutlineCalendarDays, HiOutlineCalendar, HiOutlineCog6Tooth, HiOutlineHome, HiOutlineUser,  HiOutlineUsers } from 'react-icons/hi2';
+import { HiOutlineCalendarDays, HiOutlineCalendar, HiMiniChatBubbleLeftRight , HiBuildingStorefront ,HiHome , HiInbox , HiOutlineBuildingStorefront ,HiOutlineCog6Tooth, HiOutlineHome, HiOutlineUser,  HiOutlineUsers } from 'react-icons/hi2';
 import { useSelector } from "react-redux";
 
 const NavList = styled.ul`
@@ -50,10 +50,10 @@ const StyledNavLink = styled(NavLink)`
 
 function MainNav() {
   const user = useSelector(state => state.users.user) || {};
+  console.log("User state in MainNav:", user);
   return (
     <nav>
       <NavList>
-        {user.role === 'Admin' && (
           <>
             <li>
               <StyledNavLink to="/dashboard">
@@ -96,24 +96,50 @@ function MainNav() {
                 <span>Users</span>
               </StyledNavLink>
             </li>
-
             <li>
               <StyledNavLink to="/settings">
                 <HiOutlineCog6Tooth />
                 <span>Settings</span>
               </StyledNavLink>
             </li>
+            <li>
+              <StyledNavLink to="/center">
+                <HiBuildingStorefront  />
+                <span>Center</span>
+              </StyledNavLink>
+            </li>
+            <li>
+              <StyledNavLink to="/building">
+                <HiOutlineBuildingStorefront   />
+                <span>Building</span>
+              </StyledNavLink>
+            </li>
+            <li>
+              <StyledNavLink to="/department">
+                <HiHome   />
+                <span>Department</span>
+              </StyledNavLink>
+            </li>
+            <li>
+              <StyledNavLink to="/floor">
+                <HiInbox   />
+                <span>Floor</span>
+              </StyledNavLink>
+            </li>
+            <li>
+              <StyledNavLink to="/room">
+                <HiBuildingStorefront  />
+                <span>Room</span>
+              </StyledNavLink>
+            </li>
+            <li>
+              <StyledNavLink to="https://localhost:7115/">
+                <HiMiniChatBubbleLeftRight   />
+                <span>Chat</span>
+              </StyledNavLink>
+            </li>
           </>
-        )}
 
-        {user.role === 'Patient' && (
-          <li>
-            <StyledNavLink to="/patients">
-              <HiOutlineUsers />
-              <span>Patients</span>
-            </StyledNavLink>
-          </li>
-        )}
       </NavList>
     </nav>
   )

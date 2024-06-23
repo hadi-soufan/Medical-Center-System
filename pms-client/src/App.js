@@ -5,6 +5,7 @@ import AppLayout from "./ui/AppLayout";
 import Login from "./pages/Login";
 import PageNotFound from "./pages/PageNotFound";
 import PatientAppointments from "./pages/PatientAppointments";
+import PatientProfile from "./pages/PatientProfile";
 import Doctors from "./pages/Doctors";
 import { Toaster } from "react-hot-toast";
 import Patients from "./pages/Patients";
@@ -14,6 +15,11 @@ import ProtectedRoute from "./ui/ProtectedRoute";
 import Account from "./pages/Account";
 import { DarkModeProvider } from "./context/DarkModeContext";
 import UpdateMedicalHistory from "./features/medicalHistories/UpdateMedicalHistory";
+import Center from "./pages/Center";
+import Building from "./pages/Building";
+import Department from "./pages/Department";
+import Floor from "./pages/Floor";
+import Room from "./pages/Room";
 
 function App() {
   return (
@@ -34,10 +40,16 @@ function App() {
               <Route path="appointments" element={<PatientAppointments />} />
               <Route path="doctors" element={<Doctors />} />
               <Route path="patients" element={<Patients />} />
+              <Route path="patient-profile" element={<PatientProfile />} />
               <Route path="medical-histories" element={<MedicalHistory />} />
               <Route path="update-medical-history/:id" element={<UpdateMedicalHistory />} />
               <Route path="users" element={<Users />} />
               <Route path="account" element={<Account />} />
+              <Route path="center" element={<Center />} />
+              <Route path="building" element={<Building />} />
+              <Route path="department" element={<Department />} />
+              <Route path="floor" element={<Floor />} />
+              <Route path="room" element={<Room />} />
             </Route>
 
             <Route path="login" element={<Login />} />

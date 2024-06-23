@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import CenterLogo from '../assets/img/center.jpg'
+import CenterLogo from '../assets/img/logo.webp'
 import { useDarkMode } from "../context/DarkModeContext";
 
 const StyledLogo = styled.div`
