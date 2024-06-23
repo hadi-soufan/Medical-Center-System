@@ -52,6 +52,9 @@ namespace Application.Appointments
                 _emailService = emailService;
             }
 
+            public ApplicationDbContext DbContext { get; }
+            public IAppointmentUpdateSender Object { get; }
+
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 try
@@ -92,7 +95,6 @@ namespace Application.Appointments
                 }
                 catch (SmtpException smtpEx)
                 {
-                    // Log and handle SMTP-specific errors
                     return Result<Unit>.Failure($"Email sending failed: {smtpEx.Message}");
                 }
                 catch (Exception ex)

@@ -42,7 +42,6 @@ namespace API.Services
                 }
                 catch (SmtpException ex)
                 {
-                    // Handle SMTP errors
                     throw new InvalidOperationException("Failed to send email", ex);
                 }
             }
